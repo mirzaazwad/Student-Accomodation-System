@@ -15,6 +15,7 @@ const Login = () => {
     try {
       const response = await axios.post("/auth/login", formData);
       console.log("Login successful:", response.data);
+      localStorage.setItem("token", response.data.token);
       navigate("/dashboard");
     } catch (error) {
       console.error("Error logging in:", error.response.data);
