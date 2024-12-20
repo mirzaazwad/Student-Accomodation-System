@@ -1,25 +1,26 @@
-const bodyParser = require("body-parser")
+const bodyParser = require("body-parser");
 const express = require("express");
 const dotenv = require("dotenv");
 const cors = require("cors");
 
 dotenv.config();
 
-const apartmentRoute = require("./routes/apartmentRoute");
-const auth = require("./routes/auth");
 const app = express();
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended:true}))
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use(
+  cors({
+    origin: ["http://localhost:5173"],
+  })
+);
+
+const apartmentRoute = require("./routes/apartmentRoute");
+const auth = require("./routes/auth");
 
 app.use("/apartment", apartmentRoute);
 app.use("/auth", auth);
 app.use(express.json());
-app.use(
-  cors({
-    origin: ["http://localhost:5173","http://localhost:5174"],
-    optionsSuccessStatus: 200, 
-  })
-)
 
 const mongoose = require("mongoose");
 
