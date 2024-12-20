@@ -1,17 +1,19 @@
-import React, { useState } from 'react';
-import axios from '../../utils/api';
-// import "/src/styles.css"; 
-
+import { useState } from "react";
+import axios from "../../utils/api";
+import { useNavigate } from "react-router-dom";
+// import "/src/styles.css";
 
 const Register = () => {
   const [userData, setUserData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    role: 'student', // default role (could be 'student' or 'landlord')
+    name: "",
+    email: "",
+    password: "",
+    role: "student", // default role (could be 'student' or 'landlord')
   });
 
-  const [error, setError] = useState('');
+  const navigate = useNavigate();
+
+  const [error, setError] = useState("");
 
   const handleChange = (e) => {
     setUserData({ ...userData, [e.target.name]: e.target.value });
@@ -20,11 +22,11 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('/auth/register', userData);
-      alert('Registration successful, please check your email to verify.');
-      // Redirect to login page
+      await axios.post("/auth/register", userData);
+      alert("Registration successful, please check your email to verify.");
+      navigate("/login");
     } catch (error) {
-      setError(error.response.data.message || 'Something went wrong!');
+      setError(error.response.data.message || "Something went wrong!");
     }
   };
 
