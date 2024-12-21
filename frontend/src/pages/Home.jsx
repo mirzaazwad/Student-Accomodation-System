@@ -1,4 +1,7 @@
+import { useNavigate } from "react-router-dom";
+
 const HomePage = () => {
+  const navigate = useNavigate();
   return (
     <div className="flex flex-row h-screen bg-background">
       <div className="w-full lg:w-1/2 flex flex-col justify-center items-start px-12">
@@ -17,7 +20,10 @@ const HomePage = () => {
           options tailored for students with comfort, convenience, and
           affordability.
         </p>
-        <button className="bg-primary hover:bg-primary-dark text-white font-medium px-6 py-3 rounded-lg">
+        <button
+          className="bg-primary hover:bg-primary-dark text-white font-medium px-6 py-3 rounded-lg"
+          onClick={() => navigate("/login")}
+        >
           Get Started
         </button>
       </div>
