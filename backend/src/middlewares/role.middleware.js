@@ -1,6 +1,10 @@
+const { getUserById } = require("../controllers/user.controller");
 const roleMiddleware = (role) => {
-  return (req, res, next) => {
-    if (req.user.userType !== role) {
+  return async (req, res, next) => {
+    const user = await getUserById(req.user.id);
+    console.log(user);
+
+    if (user.userType !== role) {
       return res.status(403).json({ message: "Forbidden" });
     }
     next();

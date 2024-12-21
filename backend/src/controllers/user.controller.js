@@ -6,7 +6,7 @@ const addProfilePicture = async (req, res) => {
   try {
     const { user, file } = req;
     user.profilePicture = file.path;
-    await User.updateOne({ _id: user._id }, { profilePicture: file.path });
+    await User.updateOne({ _id: user.id }, { profilePicture: file.path });
     return res.status(200).json({
       message: "Profile Picture Added Successfully",
     });
@@ -20,7 +20,7 @@ const addProfilePicture = async (req, res) => {
 const changePassword = async (req, res) => {
   try {
     const { oldPassword, newPassword } = req.body;
-    const user = await User.findOne({ _id: req.user._id });
+    const user = await User.findOne({ _id: req.user.id });
     const isMatch = await bcrypt.compare(oldPassword, user.password);
     if (!isMatch) {
       throw Error("Invalid Old Password");
@@ -83,7 +83,7 @@ const roommateInformation = async (req, res) => {
 
 const addFavoriteAppartment = async (req, res) => {
   try {
-    const user = await User.findOne({ _id: req.user._id });
+    const user = await User.findOne({ _id: req.user.id });
     const { apartmentId } = req.body;
     if (!apartmentId) {
       return res.status(400).json({
@@ -112,10 +112,23 @@ const addFavoriteAppartment = async (req, res) => {
     });
   }
 };
+const getUserById = async (userID) => {
+  try {
+    console.log(userID);
+    const user = await User.findOne({ _id: userID });
+    if (!user) {
+      throw new Error("User not found");
+    }
+    return user;
+  } catch (error) {
+    throw new Error(`Failed to fetch user: ${error.message}`);
+  }
+};
 
 module.exports = {
   addProfilePicture,
   changePassword,
   roommateInformation,
   addFavoriteAppartment,
+  getUserById,
 };

@@ -6,7 +6,7 @@ const createApartment = async (req, res) => {
     const { title, description, location, roomType, rent, amenities, images } =
       req.body;
     const apartment = new Apartment({
-      landlord: req.user._id,
+      landlord: req.user.id,
       title,
       description,
       location,
@@ -15,7 +15,7 @@ const createApartment = async (req, res) => {
       amenities,
       images,
     });
-
+    console.log(apartment);
     await apartment.save();
     return res.status(201).json({
       message: "Apartment created successfully",
