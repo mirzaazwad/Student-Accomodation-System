@@ -4,7 +4,9 @@
   "description": "Student Accomodation System BRAC CSE 470",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "backend": "cd backend && npm run dev",
+    "frontend": "cd frontend && npm run dev",
+    "dev": "concurrently \"npm run backend\" \"npm run frontend\""
   },
   "repository": {
     "type": "git",
@@ -26,7 +28,7 @@
     "url": "https://github.com/mirzaazwad/Student-Accomodation-System/issues"
   },
   "homepage": "https://github.com/mirzaazwad/Student-Accomodation-System#readme",
-  "dependencies": {
-    "concurrent": "^0.3.2"
+  "devDependencies": {
+    "concurrently": "^9.1.0"
   }
 }
