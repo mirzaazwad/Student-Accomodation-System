@@ -26,9 +26,9 @@ router.get("/", getApartments);
 
 router.get("/:id", getApartmentById);
 
-router.put("/update/:id", roleMiddleware("landlord"), updateApartment);
+router.put("/:id", roleMiddleware("landlord"), updateApartment);
 
-router.delete("/delete/:id", roleMiddleware("landlord"), deleteApartment);
+router.delete("/:id", roleMiddleware("landlord"), deleteApartment);
 
 router.post("/:id/review", roleMiddleware("student"), addReview);
 

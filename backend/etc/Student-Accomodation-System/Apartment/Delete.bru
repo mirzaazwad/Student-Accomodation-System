@@ -1,0 +1,15 @@
+meta {
+  name: Delete
+  type: http
+  seq: 4
+}
+
+delete {
+  url: {{baseUrl}}/apartment/6766ec2aaad9e7ea0d3c45b0
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}

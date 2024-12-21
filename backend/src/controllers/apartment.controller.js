@@ -1,5 +1,5 @@
 const Apartment = require("../models/appartment.model");
-const User = require("../models/user.model");
+const { getUserById } = require("../controllers/user.controller");
 
 const createApartment = async (req, res) => {
   try {
@@ -138,7 +138,7 @@ const addReview = async (req, res) => {
     }
 
     const review = {
-      student: req.user._id,
+      student: req.user.id,
       rating,
       comment,
     };
@@ -186,16 +186,15 @@ const deleteReview = async (req, res) => {
     if (!apartment) {
       return res.status(404).json({ message: "Apartment not found" });
     }
-
-    if (req.user.userType !== "landlord") {
-      const student = await User.findById(req.user._id);
+    const user = await getUserById(req.user.id);
+    if (user.userType !== "landlord") {
       const review = apartment.reviews.find(
         (review) => review._id.toString() === reviewId
       );
       if (!review) {
         return res.status(404).json({ message: "Review not found" });
       }
-      if (review.student.toString() !== student._id.toString()) {
+      if (review.student.toString() !== user._id.toString()) {
         return res.status(403).json({ message: "Forbidden" });
       }
     }
