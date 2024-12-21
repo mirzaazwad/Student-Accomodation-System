@@ -5,7 +5,29 @@ meta {
 }
 
 post {
-  url: 
-  body: none
-  auth: none
+  url: {{baseUrl}}/apartment/create
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+body:json {
+  {
+    "title": "Spacious 2-bedroom apartment in downtown",
+    "description": "A modern and fully-furnished apartment located in the heart of the city.",
+    "location": {
+      "address": "123 Main Street, Downtown City",
+      "coordinates": {
+        "coordinates": [40.7128, -74.0060] 
+      }
+    },
+    "roomType": "Single",
+    "rent": 1500,
+    "amenities": ["WiFi"],
+    "images": ""
+  }
+  
 }
