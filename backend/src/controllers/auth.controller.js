@@ -59,6 +59,14 @@ const login = async (req, res) => {
     }
 
     if (!user.verified) {
+      user.otp = Math.floor(100000 + Math.random() * 900000);
+      user.otpType = "register";
+      await user.save();
+      await EmailService.sendEmail(
+        email,
+        "OTP Verification",
+        `Your OTP is ${user.otp}`
+      );
       return res.status(401).json({
         message: "User Not Verified",
         redirect: true,
