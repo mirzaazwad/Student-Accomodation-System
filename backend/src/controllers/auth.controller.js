@@ -141,10 +141,26 @@ const refresh = async (req, res) => {
     return res.status(200).json({
       message: "Token Refreshed Successfully",
       accessToken,
+      success: true,
     });
   } catch (error) {
     return res.status(400).json({
       message: "Failed To Refresh Token: " + error.message,
+      success: false,
+    });
+  }
+};
+
+const logout = async (req, res) => {
+  const { refreshToken } = req.body;
+  try {
+    await Auth.deleteOne({ refreshToken });
+    return res.status(200).json({
+      message: "Logout Successful",
+    });
+  } catch (error) {
+    return res.status(400).json({
+      message: "Failed To Logout: " + error.message,
     });
   }
 };
@@ -255,4 +271,5 @@ module.exports = {
   verifyAccessToken,
   resetPassword,
   refresh,
+  logout,
 };

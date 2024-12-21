@@ -10,7 +10,7 @@ class RequestHandler {
         if (token) {
           requestConfig.headers.Authorization = `Bearer ${token}`;
         }
-
+        requestConfig.baseURL = import.meta.env.VITE_APP_API_URL;
         return requestConfig;
       },
       function (error) {

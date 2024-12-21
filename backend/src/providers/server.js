@@ -5,6 +5,7 @@ const path = require("path");
 
 const app = express();
 const { authMiddleware } = require("../middlewares/auth.middleware");
+const logMiddleware = require("../middlewares/log.middleware");
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -19,6 +20,7 @@ app.use(
   })
 );
 
+app.use(logMiddleware);
 app.use(authMiddleware);
 app.use("/upload", express.static(path.resolve(__dirname, "../../upload")));
 
