@@ -1,0 +1,32 @@
+{
+  "name": "student-accomodation-system",
+  "version": "1.0.0",
+  "description": "Student Accomodation System BRAC CSE 470",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mirzaazwad/Student-Accomodation-System.git"
+  },
+  "keywords": [
+    "JavaScript",
+    "MERN",
+    "MongoDB",
+    "Express",
+    "Node",
+    "React",
+    "TailwindCSS",
+    "Vite"
+  ],
+  "author": "Nuhash Kabir Neeha, Nuzhat Rahman",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mirzaazwad/Student-Accomodation-System/issues"
+  },
+  "homepage": "https://github.com/mirzaazwad/Student-Accomodation-System#readme",
+  "dependencies": {
+    "concurrent": "^0.3.2"
+  }
+}
