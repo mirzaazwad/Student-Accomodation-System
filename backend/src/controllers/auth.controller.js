@@ -84,6 +84,27 @@ const login = async (req, res) => {
   }
 };
 
+const verifyAccessToken = async (req, res, next) => {
+  const accessToken = req.body.accessToken;
+  if (!accessToken) {
+    return res.status(401).json({
+      message: "Access Token Required",
+    });
+  }
+  try {
+    jwt.verify(accessToken, process.env.JWT_SECRET);
+    return res.status(200).json({
+      message: "Valid Access Token",
+      success: true,
+    });
+  } catch (error) {
+    return res.status(401).json({
+      message: "Invalid Access Token",
+      success: false,
+    });
+  }
+};
+
 const refresh = async (req, res) => {
   const { refreshToken } = req.body;
   try {
@@ -231,6 +252,7 @@ module.exports = {
   register,
   verify,
   forgotPassword,
+  verifyAccessToken,
   resetPassword,
   refresh,
 };
