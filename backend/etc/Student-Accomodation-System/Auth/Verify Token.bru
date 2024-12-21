@@ -1,0 +1,18 @@
+meta {
+  name: Verify Token
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/auth/verify
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email":"mirzaazwad23aaaas398@gmail.com",
+    "otp":"386500"
+  }
+}

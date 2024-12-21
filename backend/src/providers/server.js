@@ -1,11 +1,10 @@
 const bodyParser = require("body-parser");
 const express = require("express");
-const dotenv = require("dotenv");
 const cors = require("cors");
-
-dotenv.config();
+const path = require("path");
 
 const app = express();
+const { authMiddleware } = require("../middlewares/auth.middleware");
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -20,24 +19,20 @@ app.use(
   })
 );
 
-const apartmentRoute = require("./routes/apartmentRoute");
-const auth = require("./routes/auth");
+app.use(authMiddleware);
+app.use("/upload", express.static(path.resolve(__dirname, "../../upload")));
+
+const apartmentRoute = require("../routes/appartment.route");
+const auth = require("../routes/auth.route");
 
 app.use("/apartment", apartmentRoute);
 app.use("/auth", auth);
 app.use(express.json());
 
-const mongoose = require("mongoose");
-
-const PORT = process.env.PORT || 5000;
-
-app.get("/", (req, res) => {
+app.get("/health", (req, res) => {
   res.send("Backend is running");
 });
 
-app.listen(PORT, async () => {
-  await mongoose
-    .connect(process.env.MONGOURI)
-    .then(() => console.log("Mongo DB connected"));
-  console.log(`Server is running on port ${PORT}`);
-});
+module.exports = {
+  app,
+};
