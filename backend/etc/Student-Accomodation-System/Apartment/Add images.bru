@@ -1,0 +1,19 @@
+meta {
+  name: Add images
+  type: http
+  seq: 9
+}
+
+post {
+  url: {{baseUrl}}/apartment/images/67686fa00f6c90e6a367b5e6
+  body: multipartForm
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+body:multipart-form {
+  files: @file(C:\Users\HP\Downloads\apartment.jpg)
+}
