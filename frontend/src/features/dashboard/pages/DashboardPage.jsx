@@ -4,7 +4,8 @@ import MapSearch from "../../../components/Map";
 const DashboardPage = () => {
   const [selectedAddress, setSelectedAddress] = useState({
     position: [23.7544529, 90.393336],
-    address: "London, England",
+    address:
+      "Dhaka, Dhaka Metropolitan, Dhaka District, Dhaka Division, 2015, Bangladesh",
   });
   return (
     <div>
