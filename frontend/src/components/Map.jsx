@@ -57,6 +57,7 @@ const MapSearch = ({
         `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`
       );
       const address = response.data.display_name;
+      setPosition([lat, lng]);
       onAddressSelect({ position: [lat, lng], address });
     } catch (error) {
       console.error("Reverse geocoding error:", error);

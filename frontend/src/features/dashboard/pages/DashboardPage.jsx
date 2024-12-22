@@ -2,12 +2,23 @@ import { useState } from "react";
 import MapSearch from "../../../components/Map";
 
 const DashboardPage = () => {
-  const [address, setAddress] = useState("");
+  const [selectedAddress, setSelectedAddress] = useState({
+    position: [23.7544529, 90.393336],
+    address: "London, England",
+  });
   return (
     <div>
       <h1>Dashboard</h1>
-      <p>{address}</p>
-      <MapSearch onAddressSelect={({ address }) => setAddress(address)} />
+      <p>Selected address: {selectedAddress.address}</p>
+      <p>Selected position: {selectedAddress.position.join(", ")}</p>
+      <MapSearch
+        onAddressSelect={(value) => {
+          console.log(value);
+          setSelectedAddress(value);
+        }}
+        initialPosition={selectedAddress.position}
+        zoom={10}
+      />
     </div>
   );
 };
