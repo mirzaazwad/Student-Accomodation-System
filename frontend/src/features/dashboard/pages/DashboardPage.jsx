@@ -1,6 +1,7 @@
 import MapSearch from "../../../components/Map";
 import { useDashboard } from "../hooks/useDashboard";
 import LoadingComponent from "../../../components/LoadingComponent";
+import { useNavigate } from "react-router-dom";
 
 const DashboardPage = () => {
   const {
@@ -11,6 +12,8 @@ const DashboardPage = () => {
     setSelectedAddress,
     favoriteApparments,
   } = useDashboard();
+  const navigate = useNavigate();
+
   if (loading) {
     return <LoadingComponent />;
   }
@@ -64,7 +67,11 @@ const DashboardPage = () => {
           {favoriteApparments.map((appartment, index) => (
             <div
               key={index}
-              className="w-[300px] p-4 flex-shrink-0 flex flex-col items-center gap-4 rounded-lg shadow-md justify-center items-start"
+              className="w-[300px] p-4 flex-shrink-0 flex flex-col items-center gap-4 rounded-lg shadow-md justify-center items-start cursor-pointer"
+              onClick={() =>
+              {
+                navigate(`/appartments/${appartment.id}`);
+              }}
             >
               <div className="w-full">
                 <img
