@@ -13,11 +13,12 @@ L.Icon.Default.mergeOptions({
 });
 
 const MapSearch = ({
-  initialPosition = [51.505, -0.09],
+  currentPosition = [51.505, -0.09],
   zoom = 13,
   onAddressSelect,
+  showSearchBar = false,
+  movePointer = false,
 }) => {
-  const [position, setPosition] = useState(initialPosition);
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleSearch = async () => {
@@ -28,7 +29,6 @@ const MapSearch = ({
       if (response.data.length > 0) {
         const { lat, lon, display_name } = response.data[0];
         const newPosition = [parseFloat(lat), parseFloat(lon)];
-        setPosition(newPosition);
         onAddressSelect({ position: newPosition, address: display_name });
       } else {
         alert("No results found!");
@@ -41,14 +41,16 @@ const MapSearch = ({
   const LocationMarker = () => {
     useMapEvents({
       click(e) {
-        const { lat, lng } = e.latlng;
-        const newPosition = [lat, lng];
-        setPosition(newPosition);
-        reverseGeocode(lat, lng);
+        if (movePointer) {
+          const { lat, lng } = e.latlng;
+          reverseGeocode(lat, lng);
+        }
       },
     });
 
-    return position ? <Marker position={position}></Marker> : null;
+    return currentPosition ? (
+      <Marker position={currentPosition}></Marker>
+    ) : null;
   };
 
   const reverseGeocode = async (lat, lng) => {
@@ -57,7 +59,6 @@ const MapSearch = ({
         `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`
       );
       const address = response.data.display_name;
-      setPosition([lat, lng]);
       onAddressSelect({ position: [lat, lng], address });
     } catch (error) {
       console.error("Reverse geocoding error:", error);
@@ -66,31 +67,31 @@ const MapSearch = ({
 
   return (
     <div className="bg-white shadow-md rounded-lg p-4">
-      <div className="flex items-center gap-2 mb-4">
-        <input
-          type="text"
-          placeholder="Search for an address..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="flex-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        <button
-          onClick={handleSearch}
-          className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-        >
-          Search
-        </button>
-      </div>
-      <div className="h-96 w-full rounded-lg overflow-hidden">
+      {showSearchBar && (
+        <div className="flex items-center gap-2 mb-4">
+          <input
+            type="text"
+            placeholder="Search for an address..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="flex-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <button
+            onClick={handleSearch}
+            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+          >
+            Search
+          </button>
+        </div>
+      )}
+      <div className="lg:h-[250px] h-96 w-full rounded-lg overflow-hidden">
         <MapContainer
-          center={position}
+          center={currentPosition}
           zoom={zoom}
           style={{ height: "100%", width: "100%" }}
+          latlng={currentPosition}
         >
-          <TileLayer
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          />
+          <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
           <LocationMarker />
         </MapContainer>
       </div>

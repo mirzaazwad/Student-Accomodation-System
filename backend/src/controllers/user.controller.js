@@ -1,4 +1,4 @@
-const User = require("../models/user.model");
+const { User } = require("../models/user.model");
 const Apartment = require("../models/appartment.model");
 const bcrypt = require("bcrypt");
 
@@ -114,8 +114,9 @@ const addFavoriteAppartment = async (req, res) => {
 };
 const getUserById = async (userID) => {
   try {
-    console.log(userID);
-    const user = await User.findOne({ _id: userID });
+    const user = await User.findOne({ _id: userID }).select(
+      "-password -otp -otpType"
+    );
     if (!user) {
       throw new Error("User not found");
     }
@@ -125,10 +126,24 @@ const getUserById = async (userID) => {
   }
 };
 
+const getUser = async (req, res) => {
+  try {
+    const user = await getUserById(req.user.id);
+    return res.status(200).json({
+      user,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      message: "Failed to fetch user: " + error.message,
+    });
+  }
+};
+
 module.exports = {
   addProfilePicture,
   changePassword,
   roommateInformation,
   addFavoriteAppartment,
   getUserById,
+  getUser,
 };

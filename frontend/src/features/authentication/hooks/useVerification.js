@@ -22,7 +22,7 @@ export const useVerification = () => {
       });
       navigate("/login");
     } catch (err) {
-      setError(err.message);
+      setError(err.response.data.message);
     }
 
     setLoading(false);

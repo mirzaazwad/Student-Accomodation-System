@@ -26,9 +26,11 @@ app.use("/upload", express.static(path.resolve(__dirname, "../../upload")));
 
 const apartmentRoute = require("../routes/appartment.route");
 const auth = require("../routes/auth.route");
+const userRoute = require("../routes/user.route");
 
 app.use("/apartment", apartmentRoute);
 app.use("/auth", auth);
+app.use("/user", userRoute);
 app.use(express.json());
 
 app.get("/health", (req, res) => {

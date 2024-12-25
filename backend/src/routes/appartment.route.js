@@ -15,7 +15,7 @@ const { withMultipleFiles } = require("../middlewares/storage.middleware");
 
 router.post("/create", roleMiddleware("landlord"), createApartment);
 
-router.post(
+router.patch(
   "/images/:id",
   roleMiddleware("landlord"),
   withMultipleFiles("files", ["image/jpeg", "image/png"]),

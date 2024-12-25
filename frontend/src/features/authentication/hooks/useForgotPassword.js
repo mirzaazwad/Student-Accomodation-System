@@ -20,7 +20,7 @@ export const useForgotPassword = () => {
       localStorage.setItem("reset-password-email", email);
       navigate("/reset-password");
     } catch (err) {
-      setError(err.message);
+      setError(err.response.data.message);
     }
 
     setLoading(false);

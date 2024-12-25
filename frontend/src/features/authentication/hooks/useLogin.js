@@ -31,7 +31,8 @@ export const useLogin = () => {
         dispatch(authActions.setVerificationEmail(formData.email));
         navigate("/verification");
       }
-      setError(err.message);
+      console.log(err);
+      setError(err.response.data.message);
     }
 
     setLoading(false);

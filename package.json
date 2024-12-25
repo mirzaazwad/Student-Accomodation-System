@@ -30,5 +30,8 @@
   "homepage": "https://github.com/mirzaazwad/Student-Accomodation-System#readme",
   "devDependencies": {
     "concurrently": "^9.1.0"
+  },
+  "dependencies": {
+    "joi": "^17.13.3"
   }
 }

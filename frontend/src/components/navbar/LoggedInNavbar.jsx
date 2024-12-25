@@ -15,58 +15,48 @@ const LoggedInNavbar = () => {
         <NavItem path="/settings" text="Settings" />
         <NavItem path="/logout" text="Logout" />
       </div>
-      <div className="lg:w-full lg:hidden  flex flex-col justify-end">
+      <div
+        className="lg:hidden fixed top-0 left-0 w-full bg-primary shadow-md"
+        style={{ zIndex: 1000 }}
+      >
         <div
-          className="bg-primary w-fit h-fit mx-4 my-2 cursor-pointer text-white rounded-lg hover:bg-primary-dark px-4 py-2"
-          onClick={() => {
-            setIsOpen(!isOpen);
-          }}
+          className="bg-primary w-fit h-fit m-4 cursor-pointer text-white rounded-lg hover:bg-primary-dark px-4 py-2 flex items-center"
+          onClick={() => setIsOpen(!isOpen)}
+          aria-expanded={isOpen}
         >
           <FaBars />
         </div>
         {isOpen && (
-          <div className="w-full flex flex-col justify-center items-center gap-2 bg-primary px-4 py-2">
+          <div className="w-full flex flex-col items-center gap-2 bg-primary px-4 py-4">
             <NavItem
               path="/dashboard"
               text="Dashboard"
-              callback={() => {
-                setIsOpen(!isOpen);
-              }}
+              callback={() => setIsOpen(false)}
             />
             <NavItem
               path="/appartments"
               text="Appartments"
-              callback={() => {
-                setIsOpen(!isOpen);
-              }}
+              callback={() => setIsOpen(false)}
             />
             <NavItem
               path="/profile"
               text="Profile"
-              callback={() => {
-                setIsOpen(!isOpen);
-              }}
+              callback={() => setIsOpen(false)}
             />
             <NavItem
               path="/roommates"
               text="Roommates"
-              callback={() => {
-                setIsOpen(!isOpen);
-              }}
+              callback={() => setIsOpen(false)}
             />
             <NavItem
               path="/settings"
               text="Settings"
-              callback={() => {
-                setIsOpen(!isOpen);
-              }}
+              callback={() => setIsOpen(false)}
             />
             <NavItem
               path="/logout"
               text="Logout"
-              callback={() => {
-                setIsOpen(!isOpen);
-              }}
+              callback={() => setIsOpen(false)}
             />
           </div>
         )}

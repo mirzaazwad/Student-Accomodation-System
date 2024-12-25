@@ -31,7 +31,7 @@ export const useResetPassword = () => {
       });
       navigate("/login");
     } catch (err) {
-      setError(err.message);
+      setError(err.response.data.message);
     }
 
     setLoading(false);
@@ -45,5 +45,5 @@ export const useResetPassword = () => {
     setFormData({ ...formData, otp });
   };
 
-  return { formData, error,setOtp, loading, handleChange, handleSubmit };
+  return { formData, error, setOtp, loading, handleChange, handleSubmit };
 };

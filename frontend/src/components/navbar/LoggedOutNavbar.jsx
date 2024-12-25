@@ -12,9 +12,12 @@ const LoggedOutNavbar = () => {
         <NavItem path="/login" text="Login" />
         <NavItem path="/register" text="Registration" />
       </div>
-      <div className="lg:w-full lg:hidden  flex flex-col justify-end">
+      <div
+        className="lg:hidden fixed top-0 left-0 w-full bg-primary shadow-md"
+        style={{ zIndex: 1000 }}
+      >
         <div
-          className="bg-primary w-fit h-fit mx-4 my-2 cursor-pointer text-white rounded-lg hover:bg-primary-dark px-4 py-2"
+          className="bg-primary w-fit h-fit m-4 cursor-pointer text-white rounded-lg hover:bg-primary-dark px-4 py-2 flex items-center"
           onClick={() => {
             setIsOpen(!isOpen);
           }}
@@ -22,7 +25,7 @@ const LoggedOutNavbar = () => {
           <FaBars />
         </div>
         {isOpen && (
-          <div className="w-full flex flex-col justify-center items-center gap-2 bg-primary px-4 py-2">
+          <div className="w-full flex flex-col items-center gap-2 bg-primary px-4 py-4">
             <NavItem
               path="/"
               text="Home"

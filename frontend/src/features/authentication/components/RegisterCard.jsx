@@ -56,6 +56,7 @@ const RegisterCard = () => {
           label={"User Type"}
           onChange={handleChange}
           value={formData.userType}
+          id="userType"
           options={[
             { value: "student", label: "Student" },
             { value: "landlord", label: "Landlord" },

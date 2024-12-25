@@ -12,30 +12,36 @@ export const useAuth = () => {
     setAuthCheckLoading(true);
     const access = localStorage.getItem("access");
     const refresh = localStorage.getItem("refresh");
-    if (access) {
-      const verified = await axios.post("/auth/verify-access-token", {
-        accessToken: access,
-      });
-      if (verified && verified.data.success) {
-        dispatch(authActions.setAuthStatus(true));
-        setAuthCheckLoading(false);
-        return;
+    try {
+      if (access) {
+        const verified = await axios.post("/auth/verify-access-token", {
+          accessToken: access,
+        });
+        if (verified && verified.data.success) {
+          dispatch(authActions.setAuthStatus(true));
+          setAuthCheckLoading(false);
+          return;
+        }
       }
-    }
-    if (refresh) {
-      const found = await axios.post("/auth/refresh", {
-        refreshToken: refresh,
-      });
-      if (found && found.data.success) {
-        dispatch(authActions.setAuthStatus(true));
-        dispatch(authActions.setAccessToken(found.data.accessToken));
-        setAuthCheckLoading(false);
-        return;
+      if (refresh) {
+        const found = await axios.post("/auth/refresh", {
+          refreshToken: refresh,
+        });
+        if (found && found.data.success) {
+          dispatch(authActions.setAuthStatus(true));
+          dispatch(authActions.setAccessToken(found.data.accessToken));
+          setAuthCheckLoading(false);
+          return;
+        }
       }
+      dispatch(authActions.setAuthStatus(false));
+      dispatch(authActions.logout());
+      setAuthCheckLoading(false);
+    } catch {
+      dispatch(authActions.setAuthStatus(false));
+      dispatch(authActions.logout());
+      setAuthCheckLoading(false);
     }
-    dispatch(authActions.setAuthStatus(false));
-    dispatch(authActions.logout());
-    setAuthCheckLoading(false);
   };
 
   useEffect(() => {

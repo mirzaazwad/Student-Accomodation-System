@@ -5,11 +5,12 @@ const {
   roommateInformation,
   addProfilePicture,
   addFavoriteAppartment,
+  getUser,
 } = require("../controllers/user.controller");
 const { roleMiddleware } = require("../middlewares/role.middleware");
 const { withSingleFile } = require("../middlewares/storage.middleware");
 
-router.post("/change-password", changePassword);
+router.patch("/change-password", changePassword);
 router.post(
   "/roommate-information",
   roleMiddleware("student"),
@@ -25,3 +26,6 @@ router.post(
   roleMiddleware("student"),
   addFavoriteAppartment
 );
+router.get("/fetch", getUser);
+
+module.exports = router;

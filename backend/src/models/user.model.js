@@ -1,6 +1,9 @@
 const { omit } = require("lodash");
 const mongoose = require("mongoose");
 
+const userTypes = ["student", "landlord"];
+const otpTypes = ["register", "forgotPassword"];
+
 const userSchema = new mongoose.Schema(
   {
     email: {
@@ -24,7 +27,7 @@ const userSchema = new mongoose.Schema(
     },
     userType: {
       type: mongoose.Schema.Types.String,
-      enum: ["student", "landlord"],
+      enum: userTypes,
       required: true,
     },
     otp: {
@@ -40,7 +43,7 @@ const userSchema = new mongoose.Schema(
     },
     otpType: {
       type: mongoose.Schema.Types.String,
-      enum: ["register", "forgotPassword"],
+      enum: otpTypes,
       required: true,
     },
     favorites: {
@@ -133,4 +136,8 @@ userSchema.statics.findUserById = async function (id) {
 
 const User = mongoose.model("User", userSchema);
 
-module.exports = User;
+module.exports = {
+  User,
+  userTypes,
+  otpTypes,
+};

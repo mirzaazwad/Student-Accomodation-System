@@ -36,7 +36,7 @@ export const useRegister = () => {
       dispatch(authActions.setVerificationEmail(formData.email));
       navigate("/verification");
     } catch (err) {
-      setError(err.message);
+      setError(err.response.data.message);
     }
 
     setLoading(false);
