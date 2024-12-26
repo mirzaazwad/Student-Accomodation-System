@@ -53,11 +53,30 @@ const addImages = async (req, res) => {
 
 const getApartments = async (req, res) => {
   try {
-    const apartments = await Apartment.find().populate(
-      "landlord",
-      "username email"
-    );
-    return res.status(200).json(apartments);
+    const { limit, page, search } = req.query;
+    const pageNumber = parseInt(page, 10) || 1;
+    const limitNumber = parseInt(limit, 10) || 10;
+
+    const skip = (pageNumber - 1) * limitNumber;
+    const findOptions = {};
+    if (search) {
+      findOptions.$or = [
+        { title: { $regex: search, $options: "i" } },
+        { "location.address": { $regex: search, $options: "i" } },
+        { "landlord.username": { $regex: search, $options: "i" } },
+      ];
+    }
+
+    const apartments = await Apartment.find(findOptions)
+      .skip(skip)
+      .limit(limitNumber)
+      .populate("landlord", "username email");
+
+    // Count the total matching documents
+    const total = await Apartment.countDocuments(findOptions);
+
+    // Respond with the results
+    res.json({ success: true, apartments, total });
   } catch (error) {
     return res.status(400).json({
       message: "Failed to fetch apartments: " + error.message,

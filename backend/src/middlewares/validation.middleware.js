@@ -10,7 +10,7 @@ const validateRequest = (schema) => {
       return res.status(400).json({
         message:
           "Validation Error: " +
-          error.details
+          parsedSchema.error.details
             .map((x) =>
               x.message
                 .replace("body.", "")

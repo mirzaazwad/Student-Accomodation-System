@@ -41,6 +41,24 @@ const userSchema = new mongoose.Schema(
     profilePicture: {
       type: mongoose.Schema.Types.String,
     },
+    location: {
+      type: {
+        address: {
+          type: mongoose.Schema.Types.String,
+          required: true,
+          trim: true,
+        },
+        coordinates: {
+          type: {
+            type: mongoose.Schema.Types.String,
+            enum: ["Point"],
+            default: "Point",
+          },
+          coordinates: { type: [Number], required: true },
+        },
+      },
+      required: false,
+    },
     otpType: {
       type: mongoose.Schema.Types.String,
       enum: otpTypes,

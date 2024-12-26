@@ -32,6 +32,8 @@
     "concurrently": "^9.1.0"
   },
   "dependencies": {
-    "joi": "^17.13.3"
+    "@headlessui/react": "^2.2.0",
+    "joi": "^17.13.3",
+    "tailwind-merge": "^2.6.0"
   }
 }

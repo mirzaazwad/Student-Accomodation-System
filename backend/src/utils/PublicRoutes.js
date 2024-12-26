@@ -7,9 +7,17 @@ const UNPREOTECTED_ROUTES = [
   "/auth/refresh",
   "/auth/verify-access-token",
   "/health",
+  "/upload",
 ];
 
-const isPublicRoute = (path) => UNPREOTECTED_ROUTES.includes(path);
+const isPublicRoute = (path) => {
+  for (const route of UNPREOTECTED_ROUTES) {
+    if (path.includes(route)) {
+      return true;
+    }
+  }
+  return false;
+};
 
 module.exports = {
   isPublicRoute,

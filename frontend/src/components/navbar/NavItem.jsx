@@ -7,7 +7,7 @@ const NavItem = (props) => {
   return (
     <div
       className={`w-full lg:w-fit  mx-4 my-2 cursor-pointer text-white p-2 rounded-lg hover:bg-primary-dark px-4 py-2 ${
-        pathname === props.path
+        pathname.includes(props.path)
           ? "bg-primary-dark cursor-not-allowed"
           : "bg-primary"
       }`}

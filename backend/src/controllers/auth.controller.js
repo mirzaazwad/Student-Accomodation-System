@@ -92,10 +92,19 @@ const verifyAccessToken = async (req, res, next) => {
     });
   }
   try {
-    jwt.verify(accessToken, process.env.JWT_SECRET);
+    const decoded = jwt.verify(accessToken, process.env.JWT_SECRET);
+    const user = await User.findOne({ _id: decoded.id }).select(
+      "-password -otp -otpType -favorites -roommates"
+    );
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
     return res.status(200).json({
       message: "Valid Access Token",
       success: true,
+      user,
     });
   } catch (error) {
     return res.status(401).json({
@@ -116,7 +125,9 @@ const refresh = async (req, res) => {
       await Auth.deleteOne({ refreshToken });
       throw Error("Refresh Token Expired");
     }
-    const user = await User.findOne({ _id: auth.userId });
+    const user = await User.findOne({ _id: auth.userId }).select(
+      "-password -otp -otpType -favorites -roommates"
+    );
     if (!user) {
       throw Error("User Not Found");
     }
@@ -141,6 +152,7 @@ const refresh = async (req, res) => {
     return res.status(200).json({
       message: "Token Refreshed Successfully",
       accessToken,
+      user,
       success: true,
     });
   } catch (error) {

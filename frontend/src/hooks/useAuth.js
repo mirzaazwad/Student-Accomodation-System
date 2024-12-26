@@ -19,6 +19,7 @@ export const useAuth = () => {
         });
         if (verified && verified.data.success) {
           dispatch(authActions.setAuthStatus(true));
+          dispatch(authActions.setUser(verified.data.user));
           setAuthCheckLoading(false);
           return;
         }
@@ -29,6 +30,7 @@ export const useAuth = () => {
         });
         if (found && found.data.success) {
           dispatch(authActions.setAuthStatus(true));
+          dispatch(authActions.setUser(found.data.user));
           dispatch(authActions.setAccessToken(found.data.accessToken));
           setAuthCheckLoading(false);
           return;

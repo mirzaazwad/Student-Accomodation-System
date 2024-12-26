@@ -18,7 +18,7 @@ const initialAuthState = {
   auth: false,
   refresh: getRefreshToken(),
   access: getAccessToken(),
-  verificationEmail: "",
+  user: {},
 };
 
 export const authSlice = createSlice({
@@ -35,6 +35,9 @@ export const authSlice = createSlice({
     setAccessToken: (state, action) => {
       state.access = action.payload;
       localStorage.setItem("access", action.payload);
+    },
+    setUser: (state, action) => {
+      state.user = action.payload;
     },
     setVerificationEmail: (state, action) => {
       state.verificationEmail = action.payload;
