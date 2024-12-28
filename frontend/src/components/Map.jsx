@@ -58,6 +58,7 @@ const MapSearch = ({
       const response = await axios.get(
         `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`
       );
+      console.log(response.data);
       const address = response.data.display_name;
       onAddressSelect({ position: [lat, lng], address });
       setSearchQuery(address);

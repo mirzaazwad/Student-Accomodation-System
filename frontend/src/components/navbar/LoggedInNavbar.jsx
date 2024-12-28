@@ -1,18 +1,26 @@
 import { useState } from "react";
 import NavItem from "./NavItem";
 import { FaBars } from "react-icons/fa";
+import { useSelector } from "react-redux";
 
 const LoggedInNavbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const user = useSelector((state) => state.auth.user);
 
   return (
     <nav className="w-full max-w-full bg-primary p-3 lg:max-h-full w-full top-0 shadow-md lg:shadow-none">
       <div className="lg:w-full hidden  lg:flex flex-row justify-end gap-2  max-h-[70px]">
         <NavItem path="/dashboard" text="Dashboard" />
-        <NavItem path="/appartments" text="Appartments" />
+        {user.userType === "student" && (
+          <>
+            <NavItem path="/appartments" text="Appartments" />
+            <NavItem path="/roommates" text="Roommates" />
+          </>
+        )}
+        {user.userType === "landlord" && (
+          <NavItem path="/listing" text="Listing" />
+        )}
         <NavItem path="/profile" text="Profile" />
-        <NavItem path="/roommates" text="Roommates" />
-        <NavItem path="/chats" text="Chats" />
         <NavItem path="/logout" text="Logout" />
       </div>
       <div
@@ -33,24 +41,30 @@ const LoggedInNavbar = () => {
               text="Dashboard"
               callback={() => setIsOpen(false)}
             />
-            <NavItem
-              path="/appartments"
-              text="Appartments"
-              callback={() => setIsOpen(false)}
-            />
+            {user.userType === "student" && (
+              <>
+                <NavItem
+                  path="/appartments"
+                  text="Appartments"
+                  callback={() => setIsOpen(false)}
+                />
+                <NavItem
+                  path="/roommates"
+                  text="Roommates"
+                  callback={() => setIsOpen(false)}
+                />
+              </>
+            )}
+            {user.userType === "landlord" && (
+              <NavItem
+                path="/listing"
+                text="Listing"
+                callback={() => setIsOpen(false)}
+              />
+            )}
             <NavItem
               path="/profile"
               text="Profile"
-              callback={() => setIsOpen(false)}
-            />
-            <NavItem
-              path="/roommates"
-              text="Roommates"
-              callback={() => setIsOpen(false)}
-            />
-            <NavItem
-              path="/chats"
-              text="Chats"
               callback={() => setIsOpen(false)}
             />
             <NavItem

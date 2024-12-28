@@ -18,6 +18,9 @@ export const modalSlice = createSlice({
     setModalData: (state, action) => {
       state.data = action.payload;
     },
+    clearModalData: (state) => {
+      state.data = {};
+    },
     setSelectedModal: (state, action) => {
       state.selectedModal = action.payload;
     },

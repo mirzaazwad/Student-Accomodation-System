@@ -5,12 +5,14 @@ import { useParams } from "react-router-dom";
 import ReviewCard from "../components/ReviewCard";
 import AddReviewButton from "../../../components/input/AddReviewButton";
 import { openModal } from "../../../utils/ModalHelper";
-import { modalTypes } from "../../../context/slices/modal.slice";
+import { modalActions, modalTypes } from "../../../context/slices/modal.slice";
+import { useDispatch } from "react-redux";
 
 const AppartmentDetailsPage = () => {
   const id = useParams().id;
-  const { error, loading, appartment, selectedAddress } =
+  const { error, loading, appartment, selectedAddress, reviews } =
     useAppartmentDetails(id);
+  const dispatch = useDispatch();
 
   if (loading) {
     return <LoadingComponent />;
@@ -111,37 +113,29 @@ const AppartmentDetailsPage = () => {
       <div className="w-full lg:mx-4 px-4 py-2 bg-white rounded-lg shadow-md my-4 flex flex-col justify-start items-start">
         <div className="w-full flex flex-row justify-between px-4">
           <h1 className="text-2xl font-semibold my-4">Reviews</h1>
-          <AddReviewButton onClick={() => openModal(modalTypes.REVIEW)} />
+          <AddReviewButton
+            onClick={() => {
+              dispatch(
+                modalActions.setModalData({
+                  id: id,
+                })
+              );
+              openModal(modalTypes.REVIEW);
+            }}
+          />
         </div>
         <div className="w-full flex flex-col justify-center items-center">
           <div className="w-full m-4 shadow-md rounded-lg">
-            <ReviewCard
-              name="John Doe"
-              comment="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec nec odio ac odio fermentum malesuada. Sed eget tortor auctor, lobortis purus a, ultrices metus. Donec nec odio"
-              rating={2}
-              createdAt={new Date()}
-            />
-            <ReviewCard
-              name="John Doe"
-              comment="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec nec odio ac odio fermentum malesuada. Sed eget tortor auctor, lobortis purus a, ultrices metus. Donec nec odio"
-              rating={2}
-              createdAt={new Date()}
-            />
-            <ReviewCard
-              name="John Doe"
-              comment="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec nec odio ac odio fermentum malesuada. Sed eget tortor auctor, lobortis purus a, ultrices metus. Donec nec odio"
-              rating={2}
-              createdAt={new Date()}
-            />
-            <ReviewCard
-              name="John Doe"
-              comment="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec nec odio ac odio fermentum malesuada. Sed eget tortor auctor, lobortis purus a, ultrices metus. Donec nec odio"
-              rating={2}
-              createdAt={new Date()}
-            />
-            <button className="w-full mx-4 my-2 px-4 py-2 bg-primary rounded-lg text-white font-bold">
-              LOAD MORE
-            </button>
+            {reviews &&
+              reviews.map((review, index) => (
+                <ReviewCard
+                  key={index}
+                  name={review.student.username}
+                  comment={review.comment}
+                  rating={review.rating}
+                  createdAt={new Date(review.createdAt)}
+                />
+              ))}
           </div>
         </div>
       </div>

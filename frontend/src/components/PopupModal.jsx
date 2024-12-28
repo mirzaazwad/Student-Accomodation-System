@@ -15,8 +15,16 @@ const PopupModal = (props) => {
     <Transition appear show={true} as={Fragment}>
       <Dialog
         as="div"
-        className="fixed inset-0 z-10 overflow-y-scroll"
-        onClose={() => closeModal()}
+        className="fixed inset-0 z-10 overflow-y-scroll overflow-x-scroll"
+        onClose={() => {
+          if (props.closeCB) {
+            props.closeCB();
+          }
+          closeModal();
+        }}
+        style={{
+          zIndex: 1000,
+        }}
       >
         <div className="min-h-screen px-4 text-center">
           <TransitionChild
@@ -61,7 +69,9 @@ const PopupModal = (props) => {
                   <button
                     type="button"
                     className="flex h-8 w-8 items-center justify-center rounded-full transition-all duration-300 hover:bg-slate-200 focus:outline-0 "
-                    onClick={() => closeModal()}
+                    onClick={() => {
+                      closeModal();
+                    }}
                   >
                     <FiX size="16px" className="text-red-600" />
                   </button>

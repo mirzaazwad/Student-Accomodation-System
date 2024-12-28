@@ -1,17 +1,20 @@
 import { useEffect, useState } from "react";
 import { axios } from "../../../utils/RequestHandler";
+import { useDispatch, useSelector } from "react-redux";
+import { reviewActions } from "../../../context/slices/review-slice";
 
 export const useAppartmentDetails = (id) => {
   const [appartment, setAppartment] = useState({});
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const [selectedAddress, setSelectedAddress] = useState(null);
+  const dispatch = useDispatch();
+  const reviews = useSelector((state) => state.review.reviews);
 
   const fetchAppartmentDetails = async () => {
     try {
       const response = await axios.get(`/apartment/${id}`);
       setAppartment(response.data);
-      console.log(response.data);
       setSelectedAddress({
         position: [
           response.data.location.coordinates.coordinates[0],
@@ -28,8 +31,22 @@ export const useAppartmentDetails = (id) => {
     }
   };
 
+  const fetchReviews = async () => {
+    try {
+      const response = await axios.get(`/apartment/${id}/reviews`);
+      dispatch(reviewActions.setReviews(response.data));
+    } catch (error) {
+      setError(
+        error.response.data.message || "Failed to fetch appartment reviews"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchAppartmentDetails();
+    fetchReviews();
   }, []);
 
   return {
@@ -37,5 +54,6 @@ export const useAppartmentDetails = (id) => {
     loading,
     appartment,
     selectedAddress,
+    reviews,
   };
 };

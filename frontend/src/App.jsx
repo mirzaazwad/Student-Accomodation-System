@@ -11,16 +11,17 @@ import ForgotPassword from "./features/authentication/pages/ForgotPasswordPage";
 import DashboardPage from "./features/dashboard/pages/DashboardPage";
 import LogoutPage from "./features/authentication/pages/LogoutPage";
 import AppartmentPage from "./features/appartments/pages/AppartmentPage";
-import ChatPage from "./features/chat/pages/ChatPage";
 import ProfilePage from "./features/profile/pages/ProfilePage";
 import RoommatesPage from "./features/roommates/pages/RoommatesPage";
 import AppartmentDetailsPage from "./features/appartments/pages/AppartmentDetailsPage";
 import { lazy, Suspense } from "react";
 import LoadingComponent from "./components/LoadingComponent";
-import AddAppartmentsPage from "./features/appartments/pages/AddApartmentPage";
+import { useSelector } from "react-redux";
 const ModalRouter = lazy(() => import("./ModalRouter"));
 
 function App() {
+  const user = useSelector((state) => state.auth.user);
+
   return (
     <>
       <Routes>
@@ -35,12 +36,17 @@ function App() {
         <Route path="/*" element={<PrivateOutlet />}>
           <Route path="logout" element={<LogoutPage />} />
           <Route path="dashboard" element={<DashboardPage />} />
-          <Route path="appartments" element={<AppartmentPage />} />
-          <Route path="appartments/:id" element={<AppartmentDetailsPage />} />
-          <Route path="new" element={<AddAppartmentsPage />} />
-          <Route path="roommates" element={<RoommatesPage />} />
+          {user.userType === "student" && (
+            <>
+              <Route path="appartments" element={<AppartmentPage />} />
+              <Route
+                path="appartments/:id"
+                element={<AppartmentDetailsPage />}
+              />
+              <Route path="roommates" element={<RoommatesPage />} />
+            </>
+          )}
           <Route path="profile" element={<ProfilePage />} />
-          <Route path="chats" element={<ChatPage />} />
         </Route>
         <Route path="/error404" element={<Error error={"NOT FOUND"} />} />
         <Route path="/error401" element={<Error error={"UNAUTHORIZED"} />} />

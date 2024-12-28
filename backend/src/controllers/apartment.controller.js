@@ -15,7 +15,6 @@ const createApartment = async (req, res) => {
       amenities,
       images,
     });
-    console.log(apartment);
     await apartment.save();
     return res.status(201).json({
       message: "Apartment created successfully",
@@ -53,7 +52,8 @@ const addImages = async (req, res) => {
 
 const getApartments = async (req, res) => {
   try {
-    const { limit, page, search } = req.query;
+    const { limit, page, search, minPrice, maxPrice, lat, lng, roomType } =
+      req.query;
     const pageNumber = parseInt(page, 10) || 1;
     const limitNumber = parseInt(limit, 10) || 10;
 
@@ -65,6 +65,27 @@ const getApartments = async (req, res) => {
         { "location.address": { $regex: search, $options: "i" } },
         { "landlord.username": { $regex: search, $options: "i" } },
       ];
+    }
+    if (minPrice && maxPrice) {
+      findOptions.rent = { $gte: minPrice, $lte: maxPrice };
+    }
+    if (lat && lng) {
+      findOptions.location = {
+        coordinates: {
+          coordinates: {
+            $near: {
+              $geometry: {
+                type: "Point",
+                coordinates: [lat, lng],
+              },
+              $maxDistance: 5000,
+            },
+          },
+        },
+      };
+    }
+    if (roomType) {
+      findOptions.roomType = roomType;
     }
 
     const apartments = await Apartment.find(findOptions)
@@ -155,12 +176,21 @@ const addReview = async (req, res) => {
     if (!apartment) {
       return res.status(404).json({ message: "Apartment not found" });
     }
-
     const review = {
-      student: req.user.id,
+      student: {
+        id: req.user.id,
+        username: req.user.username,
+      },
       rating,
       comment,
     };
+
+    const existingReview = apartment.reviews.find(
+      (review) => review.student.id.toString() === req.user._id.toString()
+    );
+    if (existingReview) {
+      return res.status(400).json({ message: "Review already exists" });
+    }
 
     apartment.reviews.push(review);
     await apartment.save();

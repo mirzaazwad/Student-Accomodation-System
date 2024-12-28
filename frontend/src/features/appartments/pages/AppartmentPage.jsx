@@ -10,14 +10,14 @@ import { openModal } from "../../../utils/ModalHelper";
 const AppartmentPage = () => {
   const {
     appartments,
-    isLandlord,
     loading,
     limit,
     page,
     total,
     search,
-    setSearch,
+    handleSearch,
     setPage,
+    fetchAppartments,
   } = useAppartments();
 
   if (loading) {
@@ -26,21 +26,24 @@ const AppartmentPage = () => {
 
   return (
     <div className="w-full h-screen">
-      <div className="px-4 py-4 flex gap-2 items-center">
+      <form
+        className="px-4 py-4 flex gap-2 items-center"
+        onSubmit={(e) => {
+          e.preventDefault();
+          fetchAppartments();
+        }}
+      >
         <SearchBar
           placeholder="Search for apartment"
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(e) => handleSearch(e.target.value)}
         />
-        <FilterButton onClick={() => openModal(modalTypes.FILTER)} />
-      </div>
-      {isLandlord && (
-        <div className="px-4 flex justify-start items-start">
-          <button className="mx-4 px-4 py-2 bg-primary rounded-lg text-white font-bold">
-            Add Apartment
-          </button>
-        </div>
-      )}
+        <FilterButton
+          type="button"
+          onClick={() => openModal(modalTypes.FILTER)}
+        />
+        <button className="hidden" type="submit"></button>
+      </form>
       <div className="w-full px-4 py-4 mx-auto flex justify-center items-center">
         <Pagination
           totalPages={total}
