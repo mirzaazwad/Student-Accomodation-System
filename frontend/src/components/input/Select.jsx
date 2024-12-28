@@ -12,7 +12,7 @@ const Select = (props) => {
         value={props.value}
       >
         {props.options.map((option, index) => (
-          <option key={index} value={option.value}>
+          <option key={index} value={option.value} className="text-black">
             {option.label}
           </option>
         ))}

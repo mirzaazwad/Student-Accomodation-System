@@ -17,6 +17,7 @@ import RoommatesPage from "./features/roommates/pages/RoommatesPage";
 import AppartmentDetailsPage from "./features/appartments/pages/AppartmentDetailsPage";
 import { lazy, Suspense } from "react";
 import LoadingComponent from "./components/LoadingComponent";
+import AddAppartmentsPage from "./features/appartments/pages/AddApartmentPage";
 const ModalRouter = lazy(() => import("./ModalRouter"));
 
 function App() {
@@ -36,6 +37,7 @@ function App() {
           <Route path="dashboard" element={<DashboardPage />} />
           <Route path="appartments" element={<AppartmentPage />} />
           <Route path="appartments/:id" element={<AppartmentDetailsPage />} />
+          <Route path="new" element={<AddAppartmentsPage />} />
           <Route path="roommates" element={<RoommatesPage />} />
           <Route path="profile" element={<ProfilePage />} />
           <Route path="chats" element={<ChatPage />} />

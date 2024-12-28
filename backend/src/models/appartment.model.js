@@ -58,9 +58,17 @@ const apartmentSchema = new mongoose.Schema(
     reviews: [
       {
         student: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "User",
-          required: true,
+          type: {
+            id: {
+              type: mongoose.Schema.Types.ObjectId,
+              ref: "User",
+              required: true,
+            },
+            username: {
+              type: mongoose.Schema.Types.String,
+              required: true,
+            },
+          },
         },
         rating: {
           type: mongoose.Schema.Types.Number,

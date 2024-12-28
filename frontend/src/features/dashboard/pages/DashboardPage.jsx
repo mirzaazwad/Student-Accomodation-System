@@ -18,7 +18,7 @@ const DashboardPage = () => {
     return <LoadingComponent />;
   }
   return (
-    <div className="w-full lg:mx-4 my-6 p-4 bg-white justify-center items-center flex flex-col">
+    <div className="w-full h-full lg:mx-4 my-6 p-4 bg-white justify-center items-center flex flex-col">
       {error && (
         <div className="font-semibold w-full m-4 p-4 bg-red-200 text-red-800 border border-red-800 text-center">
           {error}
@@ -68,8 +68,7 @@ const DashboardPage = () => {
             <div
               key={index}
               className="w-[300px] p-4 flex-shrink-0 flex flex-col items-center gap-4 rounded-lg shadow-md justify-center items-start cursor-pointer"
-              onClick={() =>
-              {
+              onClick={() => {
                 navigate(`/appartments/${appartment.id}`);
               }}
             >

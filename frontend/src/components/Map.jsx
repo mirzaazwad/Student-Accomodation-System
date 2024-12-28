@@ -60,6 +60,7 @@ const MapSearch = ({
       );
       const address = response.data.display_name;
       onAddressSelect({ position: [lat, lng], address });
+      setSearchQuery(address);
     } catch (error) {
       console.error("Reverse geocoding error:", error);
     }
