@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { axios } from "../../../utils/RequestHandler";
 import { useDispatch, useSelector } from "react-redux";
-import { reviewActions } from "../../../context/slices/review-slice";
+import { reviewActions } from "../context/review-slice";
 
 export const useAppartmentDetails = (id) => {
   const [appartment, setAppartment] = useState({});

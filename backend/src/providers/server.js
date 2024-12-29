@@ -7,6 +7,7 @@ const app = express();
 const { authMiddleware } = require("../middlewares/auth.middleware");
 const logMiddleware = require("../middlewares/log.middleware");
 app.use(bodyParser.json());
+app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(
@@ -27,11 +28,12 @@ app.use("/upload", express.static(path.resolve(__dirname, "../../upload")));
 const apartmentRoute = require("../routes/appartment.route");
 const auth = require("../routes/auth.route");
 const userRoute = require("../routes/user.route");
+const messageRoute = require("../routes/message.route");
 
 app.use("/apartment", apartmentRoute);
 app.use("/auth", auth);
 app.use("/user", userRoute);
-app.use(express.json());
+app.use("/message", messageRoute);
 
 app.get("/health", (req, res) => {
   res.send("Backend is running");

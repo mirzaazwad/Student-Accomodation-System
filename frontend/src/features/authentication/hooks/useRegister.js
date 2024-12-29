@@ -2,7 +2,7 @@ import { useState } from "react";
 import { axios } from "../../../utils/RequestHandler";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { authActions } from "../../../context/slices/auth.slice";
+import { authActions } from "../../../context/auth.slice";
 
 export const useRegister = () => {
   const [formData, setFormData] = useState({

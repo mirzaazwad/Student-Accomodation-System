@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import { modalTypes } from "./context/slices/modal.slice";
+import { modalTypes } from "./context/modal.slice";
 import ReviewModal from "./features/appartments/modals/ReviewModal";
 import FilterModal from "./features/appartments/modals/FilterModal";
 import React, { memo } from "react";

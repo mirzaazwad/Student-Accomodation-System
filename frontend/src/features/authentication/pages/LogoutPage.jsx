@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import LoadingComponent from "../../../components/LoadingComponent";
-import { authActions } from "../../../context/slices/auth.slice";
+import { authActions } from "../../../context/auth.slice";
 import { useNavigate } from "react-router-dom";
 import { axios } from "../../../utils/RequestHandler";
 import { useEffect } from "react";

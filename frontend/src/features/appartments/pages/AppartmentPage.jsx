@@ -4,7 +4,7 @@ import SearchBar from "../../../components/input/SearchBar";
 import FilterButton from "../../../components/input/FilterButton";
 import Pagination from "../../../components/Pagination";
 import LoadingComponent from "../../../components/LoadingComponent";
-import { modalTypes } from "../../../context/slices/modal.slice";
+import { modalTypes } from "../../../context/modal.slice";
 import { openModal } from "../../../utils/ModalHelper";
 
 const AppartmentPage = () => {

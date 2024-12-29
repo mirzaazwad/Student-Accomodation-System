@@ -4,7 +4,7 @@ import { BrowserRouter } from "react-router-dom";
 import App from "./App.jsx";
 import "./App.css";
 import { Provider } from "react-redux";
-import { appStore } from "./context/redux-store.js";
+import { appStore } from "./store/redux-store.js";
 
 createRoot(document.getElementById("root")).render(
   <BrowserRouter>

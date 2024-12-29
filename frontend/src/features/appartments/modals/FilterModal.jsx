@@ -5,7 +5,7 @@ import RangeSlider from "../../../components/input/RangeSlider";
 import Select from "../../../components/input/Select";
 import PrimaryButton from "../../../components/input/PrimaryButton";
 import { useDispatch, useSelector } from "react-redux";
-import { filterActions } from "../../../context/slices/filter-slice";
+import { filterActions } from "../context/filter-slice";
 import { closeModal } from "../../../utils/ModalHelper";
 
 const FilterModal = () => {

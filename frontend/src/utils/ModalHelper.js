@@ -1,5 +1,5 @@
-import { appStore } from "../context/redux-store.js";
-import { modalActions } from "../context/slices/modal.slice.js";
+import { appStore } from "../store/redux-store.js";
+import { modalActions } from "../context/modal.slice.js";
 
 export const closeModal = () => {
   appStore.dispatch(modalActions.closeModal());

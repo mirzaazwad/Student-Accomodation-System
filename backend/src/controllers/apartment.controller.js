@@ -139,25 +139,35 @@ const getApartmentById = async (req, res) => {
 getBookedAppartments = async (req, res) => {
   try {
     const id = req.user.id;
-    const apartments = await Apartment.find({
-      landlord: id,
-    });
-    const bookedApartments = apartments.filter((apartment) => {
-      const bookings = apartment.bookings;
-      if (bookings.length > 0) {
-        const today = new Date();
-        for (const booking of bookings) {
-          if (booking.status === "Approved") {
-            if (today >= booking.checkIn && today <= booking.checkOut) {
-              return true;
-            }
-          }
-        }
-      }
-      return false;
-    });
+    const { limit = 10, page = 1 } = req.query;
+    const skip = (page - 1) * limit;
+    const today = new Date();
+    const bookedApartments = await Apartment.aggregate([
+      { $match: { landlord: id } },
+      {
+        $addFields: {
+          activeBookings: {
+            $filter: {
+              input: "$bookings",
+              as: "booking",
+              cond: {
+                $and: [
+                  { $eq: ["$$booking.status", "Approved"] },
+                  { $lte: ["$$booking.checkIn", today] },
+                  { $gte: ["$$booking.checkOut", today] },
+                ],
+              },
+            },
+          },
+        },
+      },
+      { $match: { "activeBookings.0": { $exists: true } } },
+      { $skip: skip },
+      { $limit: parseInt(limit) },
+    ]);
+
     return res.status(200).json(bookedApartments);
-  } catch (err) {
+  } catch (error) {
     return res.status(400).json({
       message: "Failed to fetch booked apartments: " + error.message,
     });
@@ -167,27 +177,40 @@ getBookedAppartments = async (req, res) => {
 getAvailableApartments = async (req, res) => {
   try {
     const id = req.user.id;
-    const apartments = await Apartment.find({
-      landlord: id,
-    });
-    const availableApartments = apartments.filter((apartment) => {
-      const bookings = apartment.bookings;
-      if (bookings.length > 0) {
-        const today = new Date();
-        for (const booking of bookings) {
-          if (booking.status === "Approved") {
-            if (today >= booking.checkIn && today <= booking.checkOut) {
-              return false;
-            }
-          }
-        }
-      }
-      return true;
-    });
+    const { limit = 10, page = 1 } = req.query;
+    const skip = (page - 1) * limit;
+    const today = new Date();
+
+    const availableApartments = await Apartment.aggregate([
+      { $match: { landlord: id } },
+      {
+        $addFields: {
+          hasActiveBooking: {
+            $anyElementTrue: {
+              $map: {
+                input: "$bookings",
+                as: "booking",
+                in: {
+                  $and: [
+                    { $eq: ["$$booking.status", "Approved"] },
+                    { $lte: ["$$booking.checkIn", today] },
+                    { $gte: ["$$booking.checkOut", today] },
+                  ],
+                },
+              },
+            },
+          },
+        },
+      },
+      { $match: { hasActiveBooking: false } },
+      { $skip: skip },
+      { $limit: parseInt(limit) },
+    ]);
+
     return res.status(200).json(availableApartments);
-  } catch (err) {
+  } catch (error) {
     return res.status(400).json({
-      message: "Failed to fetch booked apartments: " + error.message,
+      message: "Failed to fetch available apartments: " + error.message,
     });
   }
 };

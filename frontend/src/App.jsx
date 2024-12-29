@@ -17,6 +17,8 @@ import AppartmentDetailsPage from "./features/appartments/pages/AppartmentDetail
 import { lazy, Suspense } from "react";
 import LoadingComponent from "./components/LoadingComponent";
 import { useSelector } from "react-redux";
+import ListingPage from "./features/listing/pages/ListingPage";
+import ListingDetailsPage from "./features/listing/pages/ListingDetailsPage";
 const ModalRouter = lazy(() => import("./ModalRouter"));
 
 function App() {
@@ -44,6 +46,12 @@ function App() {
                 element={<AppartmentDetailsPage />}
               />
               <Route path="roommates" element={<RoommatesPage />} />
+            </>
+          )}
+          {user.userType === "landlord" && (
+            <>
+              <Route path="listing" element={<ListingPage />} />
+              <Route path="listing/:id" element={<ListingDetailsPage />} />
             </>
           )}
           <Route path="profile" element={<ProfilePage />} />

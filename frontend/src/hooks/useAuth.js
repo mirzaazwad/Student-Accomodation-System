@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { axios } from "../utils/RequestHandler";
-import { authActions } from "../context/slices/auth.slice";
+import { authActions } from "../context/auth.slice";
 
 export const useAuth = () => {
   const auth = useSelector((state) => state.auth.auth);

@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 import ReviewCard from "../components/ReviewCard";
 import AddReviewButton from "../../../components/input/AddReviewButton";
 import { openModal } from "../../../utils/ModalHelper";
-import { modalActions, modalTypes } from "../../../context/slices/modal.slice";
+import { modalActions, modalTypes } from "../../../context/modal.slice";
 import { useDispatch } from "react-redux";
 
 const AppartmentDetailsPage = () => {

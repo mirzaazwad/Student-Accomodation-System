@@ -3,8 +3,8 @@ import PopupModal from "../../../components/PopupModal";
 import PrimaryButton from "../../../components/input/PrimaryButton";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { modalActions } from "../../../context/slices/modal.slice";
-import { reviewActions } from "../../../context/slices/review-slice";
+import { modalActions } from "../../../context/modal.slice";
+import { reviewActions } from "../context/review-slice";
 import { axios } from "../../../utils/RequestHandler";
 
 const ReviewModal = () => {
