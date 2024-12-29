@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { axios } from "../../../utils/RequestHandler";
-import { filterActions } from "../../../context/slices/filter-slice";
+import { filterActions } from "../context/filter-slice";
 
 export const useAppartments = () => {
   const [appartments, setAppartments] = useState([]);

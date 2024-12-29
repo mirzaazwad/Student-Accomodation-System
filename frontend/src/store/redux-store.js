@@ -1,6 +1,6 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
-import { authReducer } from "./slices/auth.slice";
-import { modalReducer } from "./slices/modal.slice";
+import { authReducer } from "../context/auth.slice";
+import { modalReducer } from "../context/modal.slice";
 import { reviewReducer } from "./slices/review-slice";
 import { filterReducer } from "./slices/filter-slice";
 

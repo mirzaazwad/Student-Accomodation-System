@@ -9,6 +9,8 @@ const {
   getReviews,
   deleteReview,
   addImages,
+  getAvailableApartments,
+  getBookedAppartments,
 } = require("../controllers/apartment.controller");
 const { roleMiddleware } = require("../middlewares/role.middleware");
 const { withMultipleFiles } = require("../middlewares/storage.middleware");
@@ -35,5 +37,8 @@ router.post("/:id/review", roleMiddleware("student"), addReview);
 router.get("/:id/reviews", getReviews);
 
 router.delete("/:apartmentId/reviews/:reviewId", deleteReview);
+
+router.get("/available", roleMiddleware("landlord"), getAvailableApartments);
+router.get("/booked", roleMiddleware("landlord"), getBookedAppartments);
 
 module.exports = router;

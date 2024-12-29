@@ -50,11 +50,6 @@ const apartmentSchema = new mongoose.Schema(
       type: [mongoose.Schema.Types.String],
       default: [],
     },
-    availabilityStatus: {
-      type: mongoose.Schema.Types.String,
-      enum: ["Available", "Occupied"],
-      default: "Available",
-    },
     reviews: [
       {
         student: {
@@ -77,6 +72,51 @@ const apartmentSchema = new mongoose.Schema(
           required: true,
         },
         comment: { type: mongoose.Schema.Types.String, trim: true },
+        createdAt: { type: mongoose.Schema.Types.Date, default: Date.now },
+      },
+    ],
+    bookings: [
+      {
+        student: {
+          type: {
+            id: {
+              type: mongoose.Schema.Types.ObjectId,
+              ref: "User",
+              required: true,
+            },
+            username: {
+              type: mongoose.Schema.Types.String,
+              required: true,
+            },
+          },
+        },
+        roommates: [
+          {
+            type: {
+              id: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "User",
+                required: true,
+              },
+              username: {
+                type: mongoose.Schema.Types.String,
+                required: true,
+              },
+              status: {
+                type: mongoose.Schema.Types.String,
+                enum: ["Accepted", "Pending", "Rejected"],
+                default: "Pending",
+              },
+            },
+          },
+        ],
+        checkIn: { type: mongoose.Schema.Types.Date, required: true },
+        checkOut: { type: mongoose.Schema.Types.Date, required: true },
+        status: {
+          type: mongoose.Schema.Types.String,
+          enum: ["Approved", "Pending", "Rejected"],
+          default: "Pending",
+        },
         createdAt: { type: mongoose.Schema.Types.Date, default: Date.now },
       },
     ],
