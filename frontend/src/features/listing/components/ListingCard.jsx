@@ -1,13 +1,13 @@
 import { useNavigate } from "react-router-dom";
 
-const AppartmentCard = ({ appartment }) => {
+const ListingCard = ({ appartment }) => {
   const navigate = useNavigate();
-
+  console.log(appartment);
   return (
     <div
       className="w-5/6 h-fit p-4 flex-shrink-0 flex flex-col items-center gap-4 rounded-lg shadow-md justify-between items-start cursor-pointer"
       onClick={() => {
-        navigate(`/appartments/${appartment.id}`);
+        navigate(`/listing/${appartment._id}`);
       }}
     >
       <div className="w-full flex flex-ro">
@@ -31,4 +31,4 @@ const AppartmentCard = ({ appartment }) => {
   );
 };
 
-export default AppartmentCard;
+export default ListingCard;

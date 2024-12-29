@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
 
-const MultiImageUpload = ({ files = [], onFilesChange }) => {
-  const [previews, setPreviews] = useState([]);
+const MultiImageUpload = ({
+  files = [],
+  onFilesChange,
+  initialPreviews = [],
+}) => {
+  const [previews, setPreviews] = useState(initialPreviews);
 
   useEffect(() => {
-    setPreviews([]);
     if (files.length > 0) {
       const filePreviews = files.map((file) => {
         const reader = new FileReader();
@@ -15,8 +18,6 @@ const MultiImageUpload = ({ files = [], onFilesChange }) => {
       });
 
       Promise.all(filePreviews).then((previewUrls) => setPreviews(previewUrls));
-    } else {
-      setPreviews([]); // Reset previews when no files are passed
     }
   }, [files]);
 

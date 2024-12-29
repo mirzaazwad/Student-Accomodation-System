@@ -18,8 +18,9 @@ const MapSearch = ({
   onAddressSelect,
   showSearchBar = false,
   movePointer = false,
+  initialAddress = "",
 }) => {
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState(initialAddress);
 
   const handleSearch = async () => {
     try {

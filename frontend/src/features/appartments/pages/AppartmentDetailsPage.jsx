@@ -84,7 +84,7 @@ const AppartmentDetailsPage = () => {
           <p className="text-gray-600">Room Type: {appartment.roomType}</p>
           <p className="text-gray-600">
             Amenities:{" "}
-            {appartment.amenities.length > 0
+            {appartment.amenities && appartment.amenities.length > 0
               ? appartment.amenities.join(", ")
               : "None"}
           </p>

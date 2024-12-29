@@ -1,5 +1,5 @@
 import { useListings } from "../hooks/useListings";
-import AppartmentCard from "../components/AppartmentCard";
+import ListingCard from "../components/ListingCard";
 import Pagination from "../../../components/Pagination";
 import LoadingComponent from "../../../components/LoadingComponent";
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
@@ -75,7 +75,7 @@ const ListingPage = () => {
               <div className="w-full h-full px-4 flex flex-col gap-6 items-center">
                 {listings &&
                   listings.map((appartment, index) => (
-                    <AppartmentCard key={index} appartment={appartment} />
+                    <ListingCard key={index} appartment={appartment} />
                   ))}
               </div>
             </div>
@@ -95,7 +95,7 @@ const ListingPage = () => {
               <div className="w-full h-full px-4  flex flex-col gap-6 items-center">
                 {listings &&
                   listings.map((appartment, index) => (
-                    <AppartmentCard key={index} appartment={appartment} />
+                    <ListingCard key={index} appartment={appartment} />
                   ))}
               </div>
             </div>

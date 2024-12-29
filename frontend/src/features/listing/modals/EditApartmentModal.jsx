@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MapSearch from "../../../components/Map";
 import PopupModal from "../../../components/PopupModal";
 import Select from "../../../components/input/Select";
@@ -7,9 +7,16 @@ import TextArea from "../../../components/input/TextArea";
 import PrimaryButton from "../../../components/input/PrimaryButton";
 import { closeModal } from "../../../utils/ModalHelper";
 import MultiImageUpload from "../components/MultiImageUpload";
+import LoadingComponent from "../../../components/LoadingComponent";
+import { useSelector } from "react-redux";
+import { axios } from "../../../utils/RequestHandler";
 
 const EditApartmentModal = () => {
   const [files, setFiles] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const id = useSelector((state) => state.modal.data).id;
+  const [previews, setPreviews] = useState([]);
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -47,9 +54,57 @@ const EditApartmentModal = () => {
     });
   };
 
+  const fetchApartmentDetails = async () => {
+    try {
+      setLoading(true);
+      setPreviews([]);
+      const response = await axios.get(`/apartment/${id}`);
+      setFormData({
+        title: response.data.title,
+        description: response.data.description,
+        rent: response.data.rent,
+        roomType: response.data.roomType,
+        amenities: response.data.amenities.join(","),
+        location: response.data.location,
+      });
+      setOnAddressSelect({
+        position: [
+          response.data.location.coordinates.coordinates[0],
+          response.data.location.coordinates.coordinates[1],
+        ],
+        address: response.data.location.address,
+      });
+      response.data.images.map((image) =>
+        setPreviews((prev) => [
+          ...prev,
+          `${import.meta.env.VITE_APP_API_URL}/${image}`,
+        ])
+      );
+    } catch (error) {
+      setError(
+        error.response.data.message || "Failed to fetch appartment details"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchApartmentDetails();
+  }, [id]);
+
+  if (loading) {
+    return <LoadingComponent />;
+  }
+
   return (
-    <PopupModal title={"Add Apartment"}>
+    <PopupModal title={"Edit Apartment"}>
       <form className="w-full h-full flex flex-col items-center justify-center">
+        {error && (
+          <div className="w-full m-4 p-4 bg-red-200 text-red-800 border border-red-800 text-center">
+            {error}
+          </div>
+        )}
         <Input
           label="Title"
           name="title"
@@ -118,16 +173,21 @@ const EditApartmentModal = () => {
             currentPosition={onAddressSelect.position}
             onAddressSelect={handleAddressChange}
             zoom={10}
+            initialAddress={onAddressSelect.address}
           />
         </div>
-        <MultiImageUpload files={files} onFilesChange={setFiles} />
+        <MultiImageUpload
+          files={files}
+          onFilesChange={setFiles}
+          initialPreviews={previews}
+        />
         <PrimaryButton
           className="w-full"
           onClick={() => {
             closeModal();
           }}
         >
-          Add New Apartment
+          Edit Apartment
         </PrimaryButton>
       </form>
     </PopupModal>
