@@ -1,7 +1,7 @@
 import { useAppartments } from "../hooks/useAppartments";
 import AppartmentCard from "../components/AppartmentCard";
 import SearchBar from "../../../components/input/SearchBar";
-import FilterButton from "../../../components/input/FilterButton";
+import FilterButton from "../components/FilterButton";
 import Pagination from "../../../components/Pagination";
 import LoadingComponent from "../../../components/LoadingComponent";
 import { modalTypes } from "../../../context/modal.slice";

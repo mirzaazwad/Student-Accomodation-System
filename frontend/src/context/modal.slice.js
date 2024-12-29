@@ -9,6 +9,8 @@ const initialmodalState = {
 export const modalTypes = {
   REVIEW: "REVIEW",
   FILTER: "FILTER",
+  ADD_APARTMENT: "ADD_APARTMENT",
+  EDIT_APARTMENT: "EDIT_APARTMENT",
 };
 
 export const modalSlice = createSlice({

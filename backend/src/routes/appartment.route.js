@@ -38,7 +38,11 @@ router.get("/:id/reviews", getReviews);
 
 router.delete("/:apartmentId/reviews/:reviewId", deleteReview);
 
-router.get("/available", roleMiddleware("landlord"), getAvailableApartments);
-router.get("/booked", roleMiddleware("landlord"), getBookedAppartments);
+router.get(
+  "/fetch/available",
+  roleMiddleware("landlord"),
+  getAvailableApartments
+);
+router.get("/fetch/booked", roleMiddleware("landlord"), getBookedAppartments);
 
 module.exports = router;

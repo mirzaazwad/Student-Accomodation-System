@@ -1,24 +1,22 @@
 import { useListings } from "../hooks/useListings";
 import AppartmentCard from "../components/AppartmentCard";
-import SearchBar from "../../../components/input/SearchBar";
-import FilterButton from "../../../components/input/FilterButton";
 import Pagination from "../../../components/Pagination";
 import LoadingComponent from "../../../components/LoadingComponent";
-import { modalTypes } from "../../../context/modal.slice";
-import { openModal } from "../../../utils/ModalHelper";
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
+import AddApartmentButton from "../components/AddApartmentButton";
+import { openModal } from "../../../utils/ModalHelper";
+import { modalTypes } from "../../../context/modal.slice";
 
 const ListingPage = () => {
   const {
-    appartments,
+    error,
+    listings,
     loading,
+    currentTab,
     limit,
     page,
     total,
-    search,
-    handleSearch,
     setPage,
-    fetchListings,
     handleTabChange,
   } = useListings();
 
@@ -28,32 +26,42 @@ const ListingPage = () => {
 
   return (
     <div className="w-full h-screen">
-      <TabGroup>
-        <TabList>
-          <Tab onClick={() => handleTabChange("booked")}>Booked</Tab>
-          <Tab onClick={() => handleTabChange("available")}>Available</Tab>
+      <div className="w-full p-4 flex justify-end items-end">
+        <AddApartmentButton
+          onClick={() => openModal(modalTypes.ADD_APARTMENT)}
+        />
+      </div>
+      <TabGroup className="flex flex-col justify-center items-center">
+        <TabList className="w-full border-b-2">
+          <Tab
+            onClick={() => handleTabChange("booked")}
+            className={`p-4 ms-4 rounded-t-lg ${
+              currentTab === "booked"
+                ? "bg-primary-dark text-white"
+                : "hover:bg-primary text-primary hover:text-white border-t-2 border-l-2 border-r-2 border-primary"
+            }`}
+          >
+            Booked
+          </Tab>
+          <Tab
+            onClick={() => handleTabChange(`available`)}
+            className={`p-4 me-4 rounded-t-lg ${
+              currentTab === "available"
+                ? "bg-primary-dark text-white"
+                : "hover:bg-primary text-primary hover:text-white border-t-2 border-l-2 border-r-2 border-primary"
+            }`}
+          >
+            Available
+          </Tab>
         </TabList>
-        <TabPanels>
-          <TabPanel>
+        {error && (
+          <div className="w-5/6 m-4 p-4 text-lg bg-red-200 text-red-600 border border-red-600">
+            {error}
+          </div>
+        )}
+        <TabPanels className="w-full">
+          <TabPanel className={`w-full`}>
             <div className="w-full h-screen">
-              <form
-                className="px-4 py-4 flex gap-2 items-center"
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  fetchListings();
-                }}
-              >
-                <SearchBar
-                  placeholder="Search for apartment"
-                  value={search}
-                  onChange={(e) => handleSearch(e.target.value)}
-                />
-                <FilterButton
-                  type="button"
-                  onClick={() => openModal(modalTypes.FILTER)}
-                />
-                <button className="hidden" type="submit"></button>
-              </form>
               <div className="w-full px-4 py-4 mx-auto flex justify-center items-center">
                 <Pagination
                   totalPages={total}
@@ -64,34 +72,16 @@ const ListingPage = () => {
                 />
               </div>
 
-              <div className="w-full h-full px-4 flex flex-wrap gap-6">
-                {appartments &&
-                  appartments.map((appartment, index) => (
+              <div className="w-full h-full px-4 flex flex-col gap-6 items-center">
+                {listings &&
+                  listings.map((appartment, index) => (
                     <AppartmentCard key={index} appartment={appartment} />
                   ))}
               </div>
             </div>
           </TabPanel>
-          <TabPanel>
+          <TabPanel className={`w-full`}>
             <div className="w-full h-screen">
-              <form
-                className="px-4 py-4 flex gap-2 items-center"
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  fetchListings();
-                }}
-              >
-                <SearchBar
-                  placeholder="Search for apartment"
-                  value={search}
-                  onChange={(e) => handleSearch(e.target.value)}
-                />
-                <FilterButton
-                  type="button"
-                  onClick={() => openModal(modalTypes.FILTER)}
-                />
-                <button className="hidden" type="submit"></button>
-              </form>
               <div className="w-full px-4 py-4 mx-auto flex justify-center items-center">
                 <Pagination
                   totalPages={total}
@@ -102,9 +92,9 @@ const ListingPage = () => {
                 />
               </div>
 
-              <div className="w-full h-full px-4 flex flex-wrap gap-6">
-                {appartments &&
-                  appartments.map((appartment, index) => (
+              <div className="w-full h-full px-4  flex flex-col gap-6 items-center">
+                {listings &&
+                  listings.map((appartment, index) => (
                     <AppartmentCard key={index} appartment={appartment} />
                   ))}
               </div>

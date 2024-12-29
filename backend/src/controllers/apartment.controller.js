@@ -1,5 +1,6 @@
 const Apartment = require("../models/appartment.model");
 const { getUserById } = require("../controllers/user.controller");
+const { toMongoID } = require("../utils/Helper");
 
 const createApartment = async (req, res) => {
   try {
@@ -143,7 +144,7 @@ getBookedAppartments = async (req, res) => {
     const skip = (page - 1) * limit;
     const today = new Date();
     const bookedApartments = await Apartment.aggregate([
-      { $match: { landlord: id } },
+      { $match: { landlord: toMongoID(id) } },
       {
         $addFields: {
           activeBookings: {
@@ -153,8 +154,8 @@ getBookedAppartments = async (req, res) => {
               cond: {
                 $and: [
                   { $eq: ["$$booking.status", "Approved"] },
-                  { $lte: ["$$booking.checkIn", today] },
-                  { $gte: ["$$booking.checkOut", today] },
+                  { $gte: ["$$booking.checkIn", today] },
+                  { $lte: ["$$booking.checkOut", today] },
                 ],
               },
             },
@@ -166,7 +167,32 @@ getBookedAppartments = async (req, res) => {
       { $limit: parseInt(limit) },
     ]);
 
-    return res.status(200).json(bookedApartments);
+    const countDocuments = await Apartment.aggregate([
+      { $match: { landlord: toMongoID(id) } },
+      {
+        $addFields: {
+          activeBookings: {
+            $filter: {
+              input: "$bookings",
+              as: "booking",
+              cond: {
+                $and: [
+                  { $eq: ["$$booking.status", "Approved"] },
+                  { $gte: ["$$booking.checkIn", today] },
+                  { $lte: ["$$booking.checkOut", today] },
+                ],
+              },
+            },
+          },
+        },
+      },
+      { $match: { "activeBookings.0": { $exists: true } } },
+      { $count: "total" },
+    ]);
+    return res.status(200).json({
+      appartments: bookedApartments,
+      total: countDocuments[0]?.total ?? 0,
+    });
   } catch (error) {
     return res.status(400).json({
       message: "Failed to fetch booked apartments: " + error.message,
@@ -182,13 +208,13 @@ getAvailableApartments = async (req, res) => {
     const today = new Date();
 
     const availableApartments = await Apartment.aggregate([
-      { $match: { landlord: id } },
+      { $match: { landlord: toMongoID(id) } },
       {
         $addFields: {
           hasActiveBooking: {
             $anyElementTrue: {
               $map: {
-                input: "$bookings",
+                input: { $ifNull: ["$bookings", []] },
                 as: "booking",
                 in: {
                   $and: [
@@ -204,13 +230,41 @@ getAvailableApartments = async (req, res) => {
       },
       { $match: { hasActiveBooking: false } },
       { $skip: skip },
-      { $limit: parseInt(limit) },
+      { $limit: parseInt(limit, 10) },
     ]);
 
-    return res.status(200).json(availableApartments);
+    const countDocuments = await Apartment.aggregate([
+      { $match: { landlord: toMongoID(id) } },
+      {
+        $addFields: {
+          hasActiveBooking: {
+            $anyElementTrue: {
+              $map: {
+                input: { $ifNull: ["$bookings", []] },
+                as: "booking",
+                in: {
+                  $and: [
+                    { $eq: ["$$booking.status", "Approved"] },
+                    { $lte: ["$$booking.checkIn", today] },
+                    { $gte: ["$$booking.checkOut", today] },
+                  ],
+                },
+              },
+            },
+          },
+        },
+      },
+      { $match: { hasActiveBooking: false } },
+      { $count: "total" },
+    ]);
+    return res.status(200).json({
+      appartments: availableApartments,
+      total: countDocuments[0]?.total ?? 0,
+    });
   } catch (error) {
+    console.error(error);
     return res.status(400).json({
-      message: "Failed to fetch available apartments: " + error.message,
+      message: `Failed to fetch available apartments: ${error.message}`,
     });
   }
 };
