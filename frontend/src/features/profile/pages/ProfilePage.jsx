@@ -10,13 +10,7 @@ const ProfilePage = () => {
   return (
     <div className="w-full h-full flex flex-col items-center justify-center">
       <div className="w-full mx-4 flex md:flex-row flex-col justify-center items-center gap-4 rounded-lg shadow-md">
-        <ProfilePicture
-          src={
-            user?.profilePicture
-              ? import.meta.env.VITE_APP_API_URL + "/" + user?.profilePicture
-              : "/profile-picture.png"
-          }
-        />
+        <ProfilePicture src={user?.profilePicture} />
         <div className="w-1/2 flex flex-col items-start justify-start">
           <h2 className="text-lg font-semibold">{user?.email}</h2>
           <p
@@ -29,7 +23,7 @@ const ProfilePage = () => {
         </div>
       </div>
       <UpdateBasicInformation />
-      <RoommateProfile />
+      {user.userType === "student" && <RoommateProfile />}
       <ChangePassword />
     </div>
   );

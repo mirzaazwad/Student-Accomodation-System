@@ -8,6 +8,7 @@ import { modalActions, modalTypes } from "../../../context/modal.slice";
 import { useDispatch } from "react-redux";
 import { useListingDetails } from "../hooks/useListingDetails";
 import EditApartmentButton from "../components/EditAppartmentButton";
+import ProfilePicture from "../../../components/input/ProfilePicture";
 
 const ListingDetailsPage = () => {
   const id = useParams().id;
@@ -43,19 +44,11 @@ const ListingDetailsPage = () => {
             Landlord Details
           </h1>
           <div className="w-full mx-4 lg:h-[350px] md:w-3/4 lg:w-1/2 flex md:flex-row flex-col items-center gap-4">
-            <div className="w-1/2 flex flex-col items-center justify-center">
-              <img
-                src={
-                  appartment.landlord?.profilePicture
-                    ? import.meta.env.VITE_APP_API_URL +
-                      "/" +
-                      appartment.landlord?.profilePicture
-                    : "/profile-picture.png"
-                }
-                alt="avatar"
-                className="w-[200px] h-[200px] rounded-full"
-              />
-            </div>
+            <ProfilePicture
+              src={appartment.landlord?.profilePicture}
+              disabled={true}
+              isLandlord
+            />
             <div className="w-1/2 flex flex-col items-start justify-start">
               <h1 className="text-2xl font-semibold">
                 {appartment.landlord?.username}

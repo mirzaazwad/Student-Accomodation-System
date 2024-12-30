@@ -11,6 +11,24 @@ export const useAppartmentDetails = (id) => {
   const dispatch = useDispatch();
   const reviews = useSelector((state) => state.review.reviews);
 
+  const addToFavorites = async () => {
+    try {
+      if (!appartment.isFavorite) {
+        await axios.post(`/user/add-favorite-apartment`, { apartmentId: id });
+        setAppartment({ ...appartment, isFavorite: true });
+      } else {
+        await axios.post(`/user/remove-favorite-apartment`, {
+          apartmentId: id,
+        });
+        setAppartment({ ...appartment, isFavorite: false });
+      }
+    } catch (error) {
+      setError(
+        error.response.data.message || "Failed to add appartment to favorites"
+      );
+    }
+  };
+
   const fetchAppartmentDetails = async () => {
     try {
       const response = await axios.get(`/apartment/${id}`);
@@ -23,6 +41,7 @@ export const useAppartmentDetails = (id) => {
         address: response.data.location.address,
       });
     } catch (error) {
+      console.log(error);
       setError(
         error.response.data.message || "Failed to fetch appartment details"
       );
@@ -54,6 +73,7 @@ export const useAppartmentDetails = (id) => {
     loading,
     appartment,
     selectedAddress,
+    addToFavorites,
     reviews,
   };
 };

@@ -8,7 +8,11 @@ import { authActions } from "../../context/auth.slice";
 const ProfilePicture = (props) => {
   const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
-  const [imageUrl, setImageUrl] = useState(props.src || "/default-avatar.png"); // Fallback for default avatar
+  const [imageUrl, setImageUrl] = useState(
+    props.src
+      ? import.meta.env.VITE_APP_API_URL + "/" + props.src
+      : "/profile-picture.png"
+  );
   const [loading, setLoading] = useState(false);
   const imageRef = useRef(null);
 
@@ -43,14 +47,18 @@ const ProfilePicture = (props) => {
         <img
           src={imageUrl}
           alt="Profile Preview"
-          className={`w-full h-full object-cover rounded-full border-4 border-${
-            user.userType === "landlord" ? "green-400" : "primary"
+          className={`w-full h-full object-cover rounded-full border-4 ${
+            user.userType === "landlord" || props.isLandlord
+              ? "border-green-600"
+              : "border-primary"
           } shadow-lg`}
         />
         <label
           htmlFor="fileInput"
-          className={`absolute bottom-0 right-0 bg-${
-            user.userType === "landlord" ? "green-400" : "primary"
+          className={`absolute bottom-0 right-0 ${
+            user.userType === "landlord" || props.isLandlord
+              ? "bg-green-600"
+              : "bg-primary"
           } text-white rounded-full p-2 cursor-pointer hover:bg-primary-dark shadow-md`}
           title="Upload Image"
         >

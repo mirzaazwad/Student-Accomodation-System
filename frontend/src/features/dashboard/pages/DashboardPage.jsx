@@ -1,9 +1,9 @@
 import MapSearch from "../../../components/Map";
 import { useDashboard } from "../hooks/useDashboard";
 import LoadingComponent from "../../../components/LoadingComponent";
-import { useNavigate } from "react-router-dom";
 import ProfilePicture from "../../../components/input/ProfilePicture";
 import { useSelector } from "react-redux";
+import FavoriteAppartments from "../components/FavoriteAppartments";
 
 const DashboardPage = () => {
   const {
@@ -13,7 +13,6 @@ const DashboardPage = () => {
     setSelectedAddress,
     favoriteApparments,
   } = useDashboard();
-  const navigate = useNavigate();
   const user = useSelector((state) => state.auth.user);
 
   if (loading) {
@@ -28,14 +27,7 @@ const DashboardPage = () => {
       )}
       <div className="w-full flex flex-col lg:flex-row">
         <div className="w-full mx-4 lg:h-[350px] md:w-3/4 lg:w-1/2 flex md:flex-row flex-col items-center gap-4 rounded-lg shadow-md">
-          <ProfilePicture
-            src={
-              user?.profilePicture
-                ? import.meta.env.VITE_APP_API_URL + "/" + user?.profilePicture
-                : "/profile-picture.png"
-            }
-            disabled
-          />
+          <ProfilePicture src={user?.profilePicture} disabled />
           <div className="w-1/2 flex flex-col items-start justify-start">
             <h1 className="text-2xl font-semibold">{user?.username}</h1>
             <h2 className="text-lg font-semibold">{user?.email}</h2>
@@ -64,34 +56,9 @@ const DashboardPage = () => {
           </div>
         )}
       </div>
-      <div className="w-full md:w-5/6 mx-4 px-4 py-2 bg-white rounded-lg shadow-md my-4 overflow-x-auto scrollbar-hide">
-        <h1 className="text-2xl font-semibold">Favorite Appartments</h1>
-        <div className="flex gap-4 lg:flex-row flex-col justify-center items-center">
-          {favoriteApparments.map((appartment, index) => (
-            <div
-              key={index}
-              className="w-[300px] p-4 flex-shrink-0 flex flex-col items-center gap-4 rounded-lg shadow-md justify-center items-start cursor-pointer"
-              onClick={() => {
-                navigate(`/appartments/${appartment.id}`);
-              }}
-            >
-              <div className="w-full">
-                <img
-                  src={appartment.image}
-                  alt="appartment"
-                  className="w-full h-48 object-cover rounded-lg"
-                />
-              </div>
-              <div className="w-full flex flex-col items-start justify-start">
-                <h1 className="text-xl font-semibold">{appartment.title}</h1>
-                <h2 className="text-lg font-semibold">{appartment.address}</h2>
-                <p className="text-gray-600">{appartment.description}</p>
-                <p className="text-gray-600">Rent: {appartment.rent} BDT</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+      {user.userType === "student" && (
+        <FavoriteAppartments favoriteApparments={favoriteApparments} />
+      )}
     </div>
   );
 };

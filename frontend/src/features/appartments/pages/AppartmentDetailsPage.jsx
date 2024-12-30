@@ -7,11 +7,19 @@ import AddReviewButton from "../../../components/input/AddReviewButton";
 import { openModal } from "../../../utils/ModalHelper";
 import { modalActions, modalTypes } from "../../../context/modal.slice";
 import { useDispatch } from "react-redux";
+import AddToFavoritesButton from "../components/AddToFavoritesButton";
+import ProfilePicture from "../../../components/input/ProfilePicture";
 
 const AppartmentDetailsPage = () => {
   const id = useParams().id;
-  const { error, loading, appartment, selectedAddress, reviews } =
-    useAppartmentDetails(id);
+  const {
+    error,
+    loading,
+    appartment,
+    selectedAddress,
+    reviews,
+    addToFavorites,
+  } = useAppartmentDetails(id);
   const dispatch = useDispatch();
 
   if (loading) {
@@ -27,26 +35,22 @@ const AppartmentDetailsPage = () => {
     );
   }
   return (
-    <div className="w-full lg:mx-4 my-6 p-4 bg-white justify-center items-center flex flex-col">
+    <div className="w-full lg:mx-4 my-6 p-4 bg-white justify-end items-end flex flex-col">
+      <AddToFavoritesButton
+        isFavorite={appartment.isFavorite}
+        onClick={addToFavorites}
+      />
       <div className="w-full flex flex-col lg:flex-row">
         <div className="w-full lg:mx-4 lg:h-[350px] md:w-3/4 lg:w-1/2 flex flex-col gap-4 rounded-lg shadow-md my-4">
           <h1 className="text-2xl font-bold mx-4 px-4 py-2">
             Landlord Details
           </h1>
           <div className="w-full mx-4 lg:h-[350px] md:w-3/4 lg:w-1/2 flex md:flex-row flex-col items-center gap-4">
-            <div className="w-1/2 flex flex-col items-center justify-center">
-              <img
-                src={
-                  appartment.landlord?.profilePicture
-                    ? import.meta.env.VITE_APP_API_URL +
-                      "/" +
-                      appartment.landlord?.profilePicture
-                    : "/profile-picture.png"
-                }
-                alt="avatar"
-                className="w-[200px] h-[200px] rounded-full"
-              />
-            </div>
+            <ProfilePicture
+              src={appartment.landlord?.profilePicture}
+              disabled={true}
+              isLandlord
+            />
             <div className="w-1/2 flex flex-col items-start justify-start">
               <h1 className="text-2xl font-semibold">
                 {appartment.landlord?.username}

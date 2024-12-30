@@ -94,7 +94,7 @@ const verifyAccessToken = async (req, res, next) => {
   try {
     const decoded = jwt.verify(accessToken, process.env.JWT_SECRET);
     const user = await User.findOne({ _id: decoded.id }).select(
-      "-password -otp -otpType -favorites"
+      "-password -otp -otpType"
     );
     if (!user) {
       return res.status(404).json({
@@ -126,7 +126,7 @@ const refresh = async (req, res) => {
       throw Error("Refresh Token Expired");
     }
     const user = await User.findOne({ _id: auth.userId }).select(
-      "-password -otp -otpType -favorites"
+      "-password -otp -otpType"
     );
     if (!user) {
       throw Error("User Not Found");

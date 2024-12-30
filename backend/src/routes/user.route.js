@@ -7,6 +7,7 @@ const {
   addFavoriteAppartment,
   getUser,
   updateProfile,
+  removeFromFavorites,
 } = require("../controllers/user.controller");
 const { roleMiddleware } = require("../middlewares/role.middleware");
 const { withSingleFile } = require("../middlewares/storage.middleware");
@@ -32,6 +33,11 @@ router.post(
   "/add-favorite-apartment",
   roleMiddleware("student"),
   addFavoriteAppartment
+);
+router.post(
+  "/remove-favorite-apartment",
+  roleMiddleware("student"),
+  removeFromFavorites
 );
 router.patch("/update-profile", updateProfile);
 router.get("/fetch", getUser);

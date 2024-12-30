@@ -129,7 +129,14 @@ const addFavoriteAppartment = async (req, res) => {
         message: "Apartment already added to favorites.",
       });
     }
-    user.favoriteApartments.push(appartment);
+    user.favorites.push({
+      appartmentId: apartmentId,
+      title: appartment.title,
+      description: appartment.description,
+      address: appartment.location.address,
+      rent: appartment.rent,
+      image: appartment.images[0],
+    });
     await user.save();
     return res.status(200).json({
       message: "Apartment added to favorites successfully.",
@@ -140,6 +147,47 @@ const addFavoriteAppartment = async (req, res) => {
     });
   }
 };
+
+const removeFromFavorites = async (req, res) => {
+  try {
+    const user = await User.findOne({ _id: req.user.id });
+    const { apartmentId } = req.body;
+    if (!apartmentId) {
+      return res.status(400).json({
+        message: "Apartment ID is required.",
+      });
+    }
+    const appartment = await Apartment.findOne({
+      _id: apartmentId,
+    });
+    if (!appartment) {
+      return res.status(400).json({
+        message: "Apartment not found.",
+      });
+    }
+    if (
+      !user.favorites
+        .map((favorite) => favorite.appartmentId.toString())
+        .includes(apartmentId)
+    ) {
+      return res.status(400).json({
+        message: "Apartment not in favorites.",
+      });
+    }
+    user.favorites = user.favorites.filter(
+      (favorite) => favorite.appartmentId.toString() !== apartmentId
+    );
+    await user.save();
+    return res.status(200).json({
+      message: "Apartment removed from favorites successfully.",
+    });
+  } catch (error) {
+    return res.status(400).json({
+      message: "Failed to remove apartment from favorites: " + error.message,
+    });
+  }
+};
+
 const getUserById = async (userID) => {
   try {
     const user = await User.findOne({ _id: userID }).select(
@@ -174,5 +222,6 @@ module.exports = {
   addFavoriteAppartment,
   getUserById,
   updateProfile,
+  removeFromFavorites,
   getUser,
 };

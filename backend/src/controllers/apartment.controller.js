@@ -122,25 +122,23 @@ const getApartmentById = async (req, res) => {
     const { id } = req.params;
     const apartment = await Apartment.findById(id).populate(
       "landlord",
-      "username email"
+      "username email profilePicture"
     );
     if (!apartment) {
       return res.status(404).json({ message: "Apartment not found" });
     }
-    const bookings = apartment.bookings;
-    apartment.availabilityStatus = "Available";
-    if (bookings.length > 0) {
-      const today = new Date();
-      for (const booking of bookings) {
-        if (booking.status === "Approved") {
-          if (today >= booking.checkIn && today <= booking.checkOut) {
-            apartment.availabilityStatus = "Occupied";
-            break;
-          }
-        }
-      }
+    const user = await getUserById(req.user.id);
+    let isFavorite = false;
+    if (
+      user.userType === "student" &&
+      user.favorites.map((fav) => fav.appartmentId.toString()).includes(id)
+    ) {
+      isFavorite = true;
     }
-    return res.status(200).json(apartment);
+    return res.status(200).json({
+      ...apartment._doc,
+      isFavorite,
+    });
   } catch (error) {
     return res.status(400).json({
       message: "Failed to fetch apartment: " + error.message,
