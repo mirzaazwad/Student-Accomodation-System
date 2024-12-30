@@ -6,6 +6,7 @@ const {
   addProfilePicture,
   addFavoriteAppartment,
   getUser,
+  updateProfile,
 } = require("../controllers/user.controller");
 const { roleMiddleware } = require("../middlewares/role.middleware");
 const { withSingleFile } = require("../middlewares/storage.middleware");
@@ -32,6 +33,7 @@ router.post(
   roleMiddleware("student"),
   addFavoriteAppartment
 );
+router.patch("/update-profile", updateProfile);
 router.get("/fetch", getUser);
 
 module.exports = router;

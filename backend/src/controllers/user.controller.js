@@ -17,6 +17,35 @@ const addProfilePicture = async (req, res) => {
   }
 };
 
+const updateProfile = async (req, res) => {
+  try {
+    const { user } = req;
+    const { username, location } = req.body;
+    if (!username || !location) {
+      return res.status(400).json({
+        message: "Username and Location are required.",
+      });
+    }
+    const updatedUser = {
+      username,
+      location,
+    };
+    const updateResult = await User.updateOne(
+      { _id: user.id },
+      { $set: updatedUser }
+    );
+    console.log(updateResult);
+    return res.status(200).json({
+      message: "Profile Updated Successfully",
+      user: updatedUser,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      message: "Failed To Update Profile: " + error.message,
+    });
+  }
+};
+
 const changePassword = async (req, res) => {
   try {
     const { oldPassword, newPassword, confirmPassword } = req.body;
@@ -143,5 +172,6 @@ module.exports = {
   roommateInformation,
   addFavoriteAppartment,
   getUserById,
+  updateProfile,
   getUser,
 };
