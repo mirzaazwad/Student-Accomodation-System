@@ -2,17 +2,19 @@ import MapSearch from "../../../components/Map";
 import { useDashboard } from "../hooks/useDashboard";
 import LoadingComponent from "../../../components/LoadingComponent";
 import { useNavigate } from "react-router-dom";
+import ProfilePicture from "../../../components/input/ProfilePicture";
+import { useSelector } from "react-redux";
 
 const DashboardPage = () => {
   const {
     error,
     loading,
-    user,
     selectedAddress,
     setSelectedAddress,
     favoriteApparments,
   } = useDashboard();
   const navigate = useNavigate();
+  const user = useSelector((state) => state.auth.user);
 
   if (loading) {
     return <LoadingComponent />;
@@ -26,17 +28,14 @@ const DashboardPage = () => {
       )}
       <div className="w-full flex flex-col lg:flex-row">
         <div className="w-full mx-4 lg:h-[350px] md:w-3/4 lg:w-1/2 flex md:flex-row flex-col items-center gap-4 rounded-lg shadow-md">
-          <div className="w-1/2 flex flex-col items-center justify-center">
-            <img
-              src={
-                user?.profilePicture
-                  ? import.meta.env.VITE_APP_API_URL + user?.profilePicture
-                  : "/profile-picture.png"
-              }
-              alt="avatar"
-              className="w-[200px] h-[200px] rounded-full"
-            />
-          </div>
+          <ProfilePicture
+            src={
+              user?.profilePicture
+                ? import.meta.env.VITE_APP_API_URL + "/" + user?.profilePicture
+                : "/profile-picture.png"
+            }
+            disabled
+          />
           <div className="w-1/2 flex flex-col items-start justify-start">
             <h1 className="text-2xl font-semibold">{user?.username}</h1>
             <h2 className="text-lg font-semibold">{user?.email}</h2>
