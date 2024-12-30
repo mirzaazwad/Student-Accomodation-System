@@ -28,7 +28,7 @@ const changePassword = async (req, res) => {
     if (newPassword !== confirmPassword) {
       throw Error("Passwords do not match");
     }
-    user.password = newPassword;
+    user.password = await bcrypt.hash(newPassword, 10);
     await user.save();
     return res.status(200).json({
       message: "Password Changed Successfully",
