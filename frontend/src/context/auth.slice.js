@@ -46,8 +46,7 @@ export const authSlice = createSlice({
       state.auth = false;
       state.refresh = "";
       state.access = "";
-      localStorage.removeItem("refresh");
-      localStorage.removeItem("access");
+      localStorage.clear();
     },
   },
 });

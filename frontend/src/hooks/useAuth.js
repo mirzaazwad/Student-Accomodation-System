@@ -2,11 +2,13 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { axios } from "../utils/RequestHandler";
 import { authActions } from "../context/auth.slice";
+import { useNavigate } from "react-router-dom";
 
 export const useAuth = () => {
   const auth = useSelector((state) => state.auth.auth);
   const [authCheckLoading, setAuthCheckLoading] = useState(false);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const checkAuthenticationStatus = async () => {
     setAuthCheckLoading(true);
@@ -39,10 +41,12 @@ export const useAuth = () => {
       dispatch(authActions.setAuthStatus(false));
       dispatch(authActions.logout());
       setAuthCheckLoading(false);
+      navigate("/auth/login");
     } catch {
       dispatch(authActions.setAuthStatus(false));
       dispatch(authActions.logout());
       setAuthCheckLoading(false);
+      navigate("/auth/login");
     }
   };
 

@@ -1,6 +1,8 @@
+import PopupModal from "./PopupModal";
+
 const LoadingComponent = () => {
   return (
-    <div className="flex items-center justify-center h-screen">
+    <PopupModal title={"Loading"}>
       <div className="text-center">
         <div role="status">
           <svg
@@ -24,7 +26,7 @@ const LoadingComponent = () => {
           </div>
         </div>
       </div>
-    </div>
+    </PopupModal>
   );
 };
 

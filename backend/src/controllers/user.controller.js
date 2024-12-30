@@ -19,11 +19,14 @@ const addProfilePicture = async (req, res) => {
 
 const changePassword = async (req, res) => {
   try {
-    const { oldPassword, newPassword } = req.body;
+    const { oldPassword, newPassword, confirmPassword } = req.body;
     const user = await User.findOne({ _id: req.user.id });
     const isMatch = await bcrypt.compare(oldPassword, user.password);
     if (!isMatch) {
       throw Error("Invalid Old Password");
+    }
+    if (newPassword !== confirmPassword) {
+      throw Error("Passwords do not match");
     }
     user.password = newPassword;
     await user.save();
@@ -40,9 +43,9 @@ const changePassword = async (req, res) => {
 const roommateInformation = async (req, res) => {
   try {
     const { user } = req;
-    const { preferences, location, budget, moveInDate } = req.body.roommates;
+    const { preferences, budget } = req.body;
 
-    if (!preferences || !location || !budget || !moveInDate) {
+    if (!preferences || !budget) {
       return res.status(400).json({
         message:
           "All roommate attributes (preferences, location, budget, moveInDate) are required.",
@@ -55,21 +58,16 @@ const roommateInformation = async (req, res) => {
         lifestyle: preferences.lifestyle || "no preference",
         cleanliness: preferences.cleanliness || "no preference",
       },
-      location: {
-        address: location.address,
-        coordinates: location.coordinates,
-      },
       budget: {
         minRent: budget.minRent || 0,
         maxRent: budget.maxRent,
       },
-      moveInDate,
     };
-    await User.updateOne(
-      { _id: user._id },
+    const updateResult = await User.updateOne(
+      { _id: user.id },
       { $set: { roommateProfile: updatedRoommateInfo } }
     );
-
+    console.log(updateResult);
     return res.status(200).json({
       message: "Roommate Information Added Successfully",
       roommates: updatedRoommateInfo,

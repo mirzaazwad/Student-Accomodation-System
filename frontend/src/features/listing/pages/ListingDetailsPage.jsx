@@ -46,7 +46,11 @@ const ListingDetailsPage = () => {
             <div className="w-1/2 flex flex-col items-center justify-center">
               <img
                 src={
-                  appartment.landlord?.profilePicture ?? "/profile-picture.png"
+                  appartment.landlord?.profilePicture
+                    ? import.meta.env.VITE_APP_API_URL +
+                      "/" +
+                      appartment.landlord?.profilePicture
+                    : "/profile-picture.png"
                 }
                 alt="avatar"
                 className="w-[200px] h-[200px] rounded-full"

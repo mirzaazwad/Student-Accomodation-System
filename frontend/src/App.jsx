@@ -19,6 +19,7 @@ import LoadingComponent from "./components/LoadingComponent";
 import { useSelector } from "react-redux";
 import ListingPage from "./features/listing/pages/ListingPage";
 import ListingDetailsPage from "./features/listing/pages/ListingDetailsPage";
+import HomeNavigator from "./components/HomeNavigator";
 const ModalRouter = lazy(() => import("./ModalRouter"));
 
 function App() {
@@ -28,7 +29,8 @@ function App() {
     <>
       <Routes>
         <Route path="/*" element={<PublicOutlet />}>
-          <Route path="" element={<HomePage />} />
+          <Route path="" element={<HomeNavigator />} />
+          <Route path="home" element={<HomePage />} />
           <Route path="login" element={<LoginPage />} />
           <Route path="register" element={<RegisterPage />} />
           <Route path="verification" element={<EmailVerification />} />

@@ -16,7 +16,7 @@ const PrivateOutlet = () => {
       <Outlet />
     </div>
   ) : (
-    <Navigate to="/" />
+    <Navigate to="/home" />
   );
 };
 

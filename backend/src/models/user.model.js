@@ -114,23 +114,9 @@ const userSchema = new mongoose.Schema(
             default: "no preference",
           },
         },
-        location: {
-          address: {
-            type: mongoose.Schema.Types.String,
-            required: true,
-            trim: true,
-          },
-          coordinates: {
-            type: { type: String, enum: ["Point"], default: "Point" },
-            coordinates: { type: [Number], required: true },
-          },
-        },
         budget: {
           minRent: { type: mongoose.Schema.Types.Number, default: 0 },
           maxRent: { type: mongoose.Schema.Types.Number, required: true },
-        },
-        moveInDate: {
-          type: Date,
         },
       },
       required: false,

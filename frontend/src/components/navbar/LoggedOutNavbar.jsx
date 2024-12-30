@@ -8,7 +8,7 @@ const LoggedOutNavbar = () => {
   return (
     <nav className="w-full max-w-full bg-primary p-3 lg:max-h-full w-full top-0 shadow-md lg:shadow-none mb-4">
       <div className="lg:w-full hidden  lg:flex flex-row justify-end gap-2  max-h-[70px]">
-        <NavItem path="/" text="Home" />
+        <NavItem path="/home" text="Home" />
         <NavItem path="/login" text="Login" />
         <NavItem path="/register" text="Registration" />
       </div>
@@ -27,7 +27,7 @@ const LoggedOutNavbar = () => {
         {isOpen && (
           <div className="w-full flex flex-col items-center gap-2 bg-primary px-4 py-4">
             <NavItem
-              path="/"
+              path="/home"
               text="Home"
               callback={() => {
                 setIsOpen(!isOpen);

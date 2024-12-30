@@ -9,8 +9,14 @@ const {
 } = require("../controllers/user.controller");
 const { roleMiddleware } = require("../middlewares/role.middleware");
 const { withSingleFile } = require("../middlewares/storage.middleware");
+const { validateRequest } = require("../middlewares/validation.middleware");
+const { changePasswordSchema } = require("../validation/user.validation");
 
-router.patch("/change-password", changePassword);
+router.patch(
+  "/change-password",
+  validateRequest(changePasswordSchema),
+  changePassword
+);
 router.post(
   "/roommate-information",
   roleMiddleware("student"),

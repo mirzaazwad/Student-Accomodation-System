@@ -6,6 +6,7 @@ const UNPREOTECTED_ROUTES = [
   "/auth/reset-password",
   "/auth/refresh",
   "/auth/verify-access-token",
+  "/auth/logout",
   "/health",
   "/upload",
 ];
