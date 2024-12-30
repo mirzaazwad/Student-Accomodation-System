@@ -8,6 +8,25 @@ import { useState } from "react";
 const UpdateBasicInformation = () => {
   const user = useSelector((state) => state.auth.user);
   const [formData, setFormData] = useState(user);
+  const [onAddressSelect, setOnAddressSelect] = useState({
+    position: [23.801417, 90.404926],
+    address: "Banani, Dhaka",
+  });
+
+  const handleAddressChange = (address) => {
+    setOnAddressSelect(address);
+    setFormData({
+      ...formData,
+      location: {
+        type: "Point",
+        coordinates: {
+          type: "Point",
+          coordinates: [address.position[0], address.position[1]],
+        },
+        address: address.address,
+      },
+    });
+  };
 
   const handleChange = (e) => {
     setFormData({
