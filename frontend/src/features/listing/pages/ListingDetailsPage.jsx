@@ -97,26 +97,18 @@ const ListingDetailsPage = () => {
               ? appartment.amenities.join(", ")
               : "None"}
           </p>
-          <p
-            className={`text-white ${
-              appartment?.availabilityStatus === "Available"
-                ? "bg-green-600"
-                : "bg-blue-600"
-            } px-4 py-1 rounded-lg my-4`}
-          >
-            {appartment?.availabilityStatus}
-          </p>
         </div>
         <div className="w-full lg:mx-4 lg:h-[350px] md:w-3/4 lg:w-1/2 px-4 py-2 bg-white flex flex-row justify-center items-center gap-4 overflow-x-scroll rounded-lg shadow-md my-4">
-          {appartment.images && (
-            <img
-              src={`${import.meta.env.VITE_APP_API_URL}/${
-                appartment.images[0]
-              }`}
-              alt="appartment"
-              className="w-fit h-48 object-cover rounded-lg"
-            />
-          )}
+          {appartment.images &&
+            appartment.images.length > 0 &&
+            appartment.images.map((image, index) => (
+              <img
+                src={`${import.meta.env.VITE_APP_API_URL}/${image}`}
+                key={index}
+                alt="appartment"
+                className="w-fit h-48 object-cover rounded-lg"
+              />
+            ))}
         </div>
       </div>
       <div className="w-full lg:mx-4 px-4 py-2 bg-white rounded-lg shadow-md my-4 flex flex-col justify-start items-start">

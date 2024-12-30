@@ -7,9 +7,15 @@ import TextArea from "../../../components/input/TextArea";
 import PrimaryButton from "../../../components/input/PrimaryButton";
 import { closeModal } from "../../../utils/ModalHelper";
 import MultiImageUpload from "../components/MultiImageUpload";
+import { axios } from "../../../utils/RequestHandler";
+import { useNavigate } from "react-router-dom";
+import LoadingComponent from "../../../components/LoadingComponent";
 
 const AddApartmentModal = () => {
   const [files, setFiles] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -34,7 +40,10 @@ const AddApartmentModal = () => {
       ...formData,
       location: {
         type: "Point",
-        coordinates: [address.position[1], address.position[0]],
+        coordinates: {
+          type: "Point",
+          coordinates: [address.position[0], address.position[1]],
+        },
         address: address.address,
       },
     });
@@ -47,9 +56,49 @@ const AddApartmentModal = () => {
     });
   };
 
+  const handleAddApartment = async (e) => {
+    try {
+      setError("");
+      e.preventDefault();
+      setLoading(true);
+      const response = await axios.post(`/apartment/create`, formData);
+      if (files.length > 0) {
+        const fileData = new FormData();
+        files.forEach((file) => {
+          fileData.append("files", file);
+        });
+        console.log(files, fileData);
+        await axios.patch(
+          `/apartment/images/${response.data.apartment._id}`,
+          fileData
+        );
+      }
+      setLoading(false);
+      closeModal();
+      navigate("/listing/" + response.data.apartment._id);
+    } catch (error) {
+      setError(error.response?.data.message ?? "Failed to update apartment");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return <LoadingComponent />;
+  }
+
   return (
     <PopupModal title={"Add Apartment"}>
-      <form className="w-full h-full flex flex-col items-center justify-center">
+      <form
+        className="w-full h-full flex flex-col items-center justify-center"
+        method="POST"
+        onSubmit={handleAddApartment}
+      >
+        {error && (
+          <div className="w-full m-4 p-4 bg-red-200 text-red-800 border border-red-800 text-center">
+            {error}
+          </div>
+        )}
         <Input
           label="Title"
           name="title"
@@ -120,16 +169,11 @@ const AddApartmentModal = () => {
             zoom={10}
           />
         </div>
-      <MultiImageUpload files={files} onFilesChange={setFiles} />
-      <PrimaryButton
-        className="w-full"
-        onClick={() => {
-          closeModal();
-        }}
-        >
-        Add New Apartment
-      </PrimaryButton>
-        </form>
+        <MultiImageUpload files={files} onFilesChange={setFiles} />
+        <PrimaryButton className="w-full" type="submit">
+          Add New Apartment
+        </PrimaryButton>
+      </form>
     </PopupModal>
   );
 };

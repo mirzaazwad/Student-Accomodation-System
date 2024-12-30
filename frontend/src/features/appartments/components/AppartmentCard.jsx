@@ -5,7 +5,7 @@ const AppartmentCard = ({ appartment }) => {
 
   return (
     <div
-      className="w-[350px] h-[400px] p-4 flex-shrink-0 flex flex-col items-center gap-4 rounded-lg shadow-md justify-between items-start cursor-pointer"
+      className="w-[350px] h-[500px] p-4 flex-shrink-0 flex flex-col items-center gap-4 rounded-lg shadow-md justify-start items-start cursor-pointer"
       onClick={() => {
         navigate(`/appartments/${appartment.id}`);
       }}

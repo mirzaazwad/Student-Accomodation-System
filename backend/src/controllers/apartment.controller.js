@@ -13,7 +13,7 @@ const createApartment = async (req, res) => {
       location,
       roomType,
       rent,
-      amenities,
+      amenities: amenities.split(",").map((amenity) => amenity.trim()),
       images,
     });
     await apartment.save();
@@ -60,13 +60,28 @@ const getApartments = async (req, res) => {
 
     const skip = (pageNumber - 1) * limitNumber;
     const findOptions = {};
+
     if (search) {
+      const keywords = search
+        .split(" ")
+        .map((word) => word.trim().toLowerCase())
+        .filter((word) => word.length > 0 && word !== " ");
+
       findOptions.$or = [
-        { title: { $regex: search, $options: "i" } },
-        { "location.address": { $regex: search, $options: "i" } },
-        { "landlord.username": { $regex: search, $options: "i" } },
+        { title: { $in: keywords.map((kw) => new RegExp(kw, "i")) } },
+        {
+          "location.address": {
+            $in: keywords.map((kw) => new RegExp(kw, "i")),
+          },
+        },
+        {
+          "landlord.username": {
+            $in: keywords.map((kw) => new RegExp(kw, "i")),
+          },
+        },
       ];
     }
+
     if (minPrice && maxPrice) {
       findOptions.rent = { $gte: minPrice, $lte: maxPrice };
     }
@@ -88,18 +103,14 @@ const getApartments = async (req, res) => {
     if (roomType) {
       findOptions.roomType = roomType;
     }
-
     const apartments = await Apartment.find(findOptions)
       .skip(skip)
       .limit(limitNumber)
       .populate("landlord", "username email");
-
-    // Count the total matching documents
     const total = await Apartment.countDocuments(findOptions);
-
-    // Respond with the results
     res.json({ success: true, apartments, total });
   } catch (error) {
+    console.error(error);
     return res.status(400).json({
       message: "Failed to fetch apartments: " + error.message,
     });
@@ -273,6 +284,9 @@ const updateApartment = async (req, res) => {
   try {
     const { id } = req.params;
     const updates = req.body;
+    updates.amenities = updates.amenities
+      .split(",")
+      .map((amenity) => amenity.trim());
 
     const apartment = await Apartment.findByIdAndUpdate(
       id,

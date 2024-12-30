@@ -10,12 +10,14 @@ import MultiImageUpload from "../components/MultiImageUpload";
 import LoadingComponent from "../../../components/LoadingComponent";
 import { useSelector } from "react-redux";
 import { axios } from "../../../utils/RequestHandler";
+import { useNavigate } from "react-router-dom";
 
 const EditApartmentModal = () => {
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const id = useSelector((state) => state.modal.data).id;
+  const navigate = useNavigate();
   const [previews, setPreviews] = useState([]);
   const [formData, setFormData] = useState({
     title: "",
@@ -41,7 +43,10 @@ const EditApartmentModal = () => {
       ...formData,
       location: {
         type: "Point",
-        coordinates: [address.position[1], address.position[0]],
+        coordinates: {
+          type: "Point",
+          coordinates: [address.position[0], address.position[1]],
+        },
         address: address.address,
       },
     });
@@ -89,6 +94,30 @@ const EditApartmentModal = () => {
     }
   };
 
+  const handleUpdate = async (e) => {
+    try {
+      setError("");
+      e.preventDefault();
+      setLoading(true);
+      await axios.put(`/apartment/${id}`, formData);
+      if (files.length > 0) {
+        const fileData = new FormData();
+        files.forEach((file) => {
+          fileData.append("files", file);
+        });
+        console.log(files, fileData);
+        await axios.patch(`/apartment/images/${id}`, fileData);
+      }
+      setLoading(false);
+      closeModal();
+      navigate("/listing/" + id);
+    } catch (error) {
+      setError(error.response?.data.message ?? "Failed to update apartment");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchApartmentDetails();
   }, [id]);
@@ -99,7 +128,11 @@ const EditApartmentModal = () => {
 
   return (
     <PopupModal title={"Edit Apartment"}>
-      <form className="w-full h-full flex flex-col items-center justify-center">
+      <form
+        method="POST"
+        className="w-full h-full flex flex-col items-center justify-center"
+        onSubmit={handleUpdate}
+      >
         {error && (
           <div className="w-full m-4 p-4 bg-red-200 text-red-800 border border-red-800 text-center">
             {error}
@@ -181,12 +214,7 @@ const EditApartmentModal = () => {
           onFilesChange={setFiles}
           initialPreviews={previews}
         />
-        <PrimaryButton
-          className="w-full"
-          onClick={() => {
-            closeModal();
-          }}
-        >
+        <PrimaryButton type="submit" className="w-full">
           Edit Apartment
         </PrimaryButton>
       </form>

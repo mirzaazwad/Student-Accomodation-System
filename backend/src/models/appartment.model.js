@@ -126,8 +126,6 @@ const apartmentSchema = new mongoose.Schema(
   }
 );
 
-apartmentSchema.index({ "location.coordinates": "2dsphere" });
-
 const Apartment = mongoose.model("Apartment", apartmentSchema);
 
 module.exports = Apartment;

@@ -43,6 +43,10 @@ class RequestHandler {
     return this.axiosInstance.put(url, data, config);
   }
 
+  patch(url, data, config) {
+    return this.axiosInstance.patch(url, data, config);
+  }
+
   delete(url, config) {
     return this.axiosInstance.delete(url, config);
   }
