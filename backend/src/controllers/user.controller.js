@@ -9,6 +9,7 @@ const addProfilePicture = async (req, res) => {
     await User.updateOne({ _id: user.id }, { profilePicture: file.path });
     return res.status(200).json({
       message: "Profile Picture Added Successfully",
+      profilePicture: file.path,
     });
   } catch (error) {
     return res.status(400).json({

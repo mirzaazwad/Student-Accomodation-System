@@ -2,10 +2,12 @@ import { useRef, useState } from "react";
 import LoadingComponent from "../LoadingComponent";
 import { axios } from "../../utils/RequestHandler";
 import { FaCamera } from "react-icons/fa";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { authActions } from "../../context/auth.slice";
 
 const ProfilePicture = (props) => {
   const user = useSelector((state) => state.auth.user);
+  const dispatch = useDispatch();
   const [imageUrl, setImageUrl] = useState(props.src || "/default-avatar.png"); // Fallback for default avatar
   const [loading, setLoading] = useState(false);
   const imageRef = useRef(null);
@@ -19,7 +21,13 @@ const ProfilePicture = (props) => {
     try {
       const formData = new FormData();
       formData.append("file", selectedFile);
-      await axios.post("/user/add-profile-picture", formData);
+      const response = await axios.post("/user/add-profile-picture", formData);
+      dispatch(
+        authActions.setUser({
+          ...user,
+          profilePicture: response.data.profilePicture,
+        })
+      );
     } catch (error) {
       console.error("Failed to upload image:", error);
     } finally {
