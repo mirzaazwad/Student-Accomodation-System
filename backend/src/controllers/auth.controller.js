@@ -53,7 +53,7 @@ const login = async (req, res) => {
       throw Error("User Not Found");
     }
 
-    const isMatched = bcrypt.compare(password, user.password);
+    const isMatched = await bcrypt.compare(password, user.password);
     if (!isMatched) {
       throw Error("Invalid Password");
     }
