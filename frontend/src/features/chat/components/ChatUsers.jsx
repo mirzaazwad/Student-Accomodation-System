@@ -1,41 +1,10 @@
-import { useEffect, useState } from "react";
 import ChatUserCard from "./ChatUserCard";
-import { useSelector } from "react-redux";
-import { axios } from "../../../utils/RequestHandler";
 import LoadingComponent from "../../../components/LoadingComponent";
+import { useChatUsers } from "../hooks/useChatUsers";
 
 const ChatUsers = ({ id }) => {
-  const [error, setError] = useState("");
-  const user = useSelector((state) => state.auth.user);
-  const [sessions, setSessions] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [activeIndex, setActiveIndex] = useState(0);
-
-  const fetchSessions = async () => {
-    setLoading(true);
-    try {
-      const response = await axios.get("/message");
-      setSessions(response.data.sessions);
-    } catch (error) {
-      setError(error.response.data.message || "Failed to fetch sessions");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (sessions && sessions.length > 0) {
-      const currentSessionId = [user.id, id].sort().join("-");
-      const activeIndex = sessions.map((session, index) => {
-        if (session._id === currentSessionId) {
-          return index;
-        }
-      });
-      setActiveIndex(activeIndex);
-    } else {
-      fetchSessions();
-    }
-  }, [sessions, id]);
+  const { sessions, loading, error, activeIndex, setActiveIndex } =
+    useChatUsers(id);
 
   if (loading) return <LoadingComponent />;
 
@@ -44,17 +13,13 @@ const ChatUsers = ({ id }) => {
       {error && <div className="text-red-500">{error}</div>}
       {sessions &&
         sessions.map((session, index) => {
-          const currentUser =
-            session.users[0].id === user.id
-              ? session.users[1]
-              : session.users[0];
           return (
             <ChatUserCard
-              key={session.id}
-              id={currentUser.id}
-              username={currentUser.username}
-              userType={currentUser.userType}
-              profilePicture={currentUser.profilePicture}
+              key={index}
+              id={session.id}
+              username={session.username}
+              userType={session.userType}
+              profilePicture={session.profilePicture}
               onClick={() => setActiveIndex(index)}
               active={activeIndex === index}
             />

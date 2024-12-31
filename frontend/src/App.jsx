@@ -25,7 +25,6 @@ const ModalRouter = lazy(() => import("./ModalRouter"));
 
 function App() {
   const user = useSelector((state) => state.auth.user);
-
   return (
     <>
       <Routes>

@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 const Message = ({ id, message, username, profilePicture, createdAt }) => {
   const user = useSelector((state) => state.auth.user);
   const isSender = user.id === id;
+
   return (
     <div
       className={`w-full flex p-4 ${
