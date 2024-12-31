@@ -7,8 +7,9 @@ import { openModal } from "../../../utils/ModalHelper";
 import { modalActions, modalTypes } from "../../../context/modal.slice";
 import { useDispatch } from "react-redux";
 import { useListingDetails } from "../hooks/useListingDetails";
-import EditApartmentButton from "../components/EditAppartmentButton";
 import ProfilePicture from "../../../components/input/ProfilePicture";
+import IconButton from "../../../components/input/IconButton";
+import { FaEdit } from "react-icons/fa";
 
 const ListingDetailsPage = () => {
   const id = useParams().id;
@@ -31,12 +32,15 @@ const ListingDetailsPage = () => {
   return (
     <div className="w-full lg:mx-4 my-6 p-4 bg-white justify-center items-center flex flex-col">
       <div className="w-full p-1 flex justify-end items-end">
-        <EditApartmentButton
+        <IconButton
           onClick={() => {
             dispatch(modalActions.setModalData({ id: id }));
             openModal(modalTypes.EDIT_APARTMENT);
           }}
-        />
+          label="Edit Appartment"
+        >
+          <FaEdit />
+        </IconButton>
       </div>
       <div className="w-full flex flex-col lg:flex-row">
         <div className="w-full lg:mx-4 lg:h-[350px] md:w-3/4 lg:w-1/2 flex flex-col gap-4 rounded-lg shadow-md my-4">

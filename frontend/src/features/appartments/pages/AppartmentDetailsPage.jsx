@@ -3,12 +3,12 @@ import { useAppartmentDetails } from "../hooks/useAppartmentDetails";
 import LoadingComponent from "../../../components/LoadingComponent";
 import { useParams } from "react-router-dom";
 import ReviewCard from "../components/ReviewCard";
-import AddReviewButton from "../../../components/input/AddReviewButton";
 import { openModal } from "../../../utils/ModalHelper";
 import { modalActions, modalTypes } from "../../../context/modal.slice";
 import { useDispatch } from "react-redux";
-import AddToFavoritesButton from "../components/AddToFavoritesButton";
 import ProfilePicture from "../../../components/input/ProfilePicture";
+import IconButton from "../../../components/input/IconButton";
+import { FaPlus, FaStar } from "react-icons/fa";
 
 const AppartmentDetailsPage = () => {
   const id = useParams().id;
@@ -36,10 +36,14 @@ const AppartmentDetailsPage = () => {
   }
   return (
     <div className="w-full lg:mx-4 my-6 p-4 bg-white justify-end items-end flex flex-col">
-      <AddToFavoritesButton
-        isFavorite={appartment.isFavorite}
+      <IconButton
+        label="Add to Favorites"
+        className="my-2"
+        iconClassName={appartment.isFavorite ? "text-yellow-200" : ""}
         onClick={addToFavorites}
-      />
+      >
+        <FaStar />
+      </IconButton>
       <div className="w-full flex flex-col lg:flex-row">
         <div className="w-full lg:mx-4 lg:h-[350px] md:w-3/4 lg:w-1/2 flex flex-col gap-4 rounded-lg shadow-md my-4">
           <h1 className="text-2xl font-bold mx-4 px-4 py-2">
@@ -113,7 +117,7 @@ const AppartmentDetailsPage = () => {
       <div className="w-full lg:mx-4 px-4 py-2 bg-white rounded-lg shadow-md my-4 flex flex-col justify-start items-start">
         <div className="w-full flex flex-row justify-between px-4">
           <h1 className="text-2xl font-semibold my-4">Reviews</h1>
-          <AddReviewButton
+          <IconButton
             onClick={() => {
               dispatch(
                 modalActions.setModalData({
@@ -122,7 +126,10 @@ const AppartmentDetailsPage = () => {
               );
               openModal(modalTypes.REVIEW);
             }}
-          />
+            label={"Add Review"}
+          >
+            <FaPlus />
+          </IconButton>
         </div>
         <div className="w-full flex flex-col justify-center items-center">
           <div className="w-full m-4 shadow-md rounded-lg">

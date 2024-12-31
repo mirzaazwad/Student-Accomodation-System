@@ -1,9 +1,9 @@
 import Input from "../../../components/input/Input";
-import ResetButton from "./ResetButton";
-import SaveButton from "./SaveButton";
 import { useState } from "react";
 import { axios } from "../../../utils/RequestHandler";
 import LoadingComponent from "../../../components/LoadingComponent";
+import IconButton from "../../../components/input/IconButton";
+import { FaSave, FaTrashRestore } from "react-icons/fa";
 
 const ChangePassword = () => {
   const initialValue = {
@@ -77,14 +77,19 @@ const ChangePassword = () => {
         type="password"
       ></Input>
       <div className="w-full flex flex-row gap-4 justify-end items-end">
-        <SaveButton type="submit" className="w-[200px]" />
-        <ResetButton
+        <IconButton type="submit" label="Save" className="w-[200px]">
+          <FaSave />
+        </IconButton>
+        <IconButton
           type="button"
+          label="Reset"
           className="w-[200px]"
           onClick={() => {
             setFormData(initialValue);
           }}
-        />
+        >
+          <FaTrashRestore />
+        </IconButton>
       </div>
     </form>
   );

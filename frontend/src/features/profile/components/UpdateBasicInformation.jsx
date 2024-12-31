@@ -1,11 +1,11 @@
 import { useSelector } from "react-redux";
 import Input from "../../../components/input/Input";
 import MapSearch from "../../../components/Map";
-import ResetButton from "./ResetButton";
-import SaveButton from "./SaveButton";
 import { useState } from "react";
 import LoadingComponent from "../../../components/LoadingComponent";
 import { axios } from "../../../utils/RequestHandler";
+import IconButton from "../../../components/input/IconButton";
+import { FaSave, FaTrashRestore } from "react-icons/fa";
 
 const UpdateBasicInformation = () => {
   const user = useSelector((state) => state.auth.user);
@@ -26,6 +26,36 @@ const UpdateBasicInformation = () => {
           address: "Banani, Dhaka",
         }
   );
+
+  const initialValue = {
+    username: user.username,
+    location: user?.location ?? {
+      type: "Point",
+      coordinates: {
+        type: "Point",
+        coordinates: [23.801417, 90.404926],
+      },
+      address: "Banani, Dhaka",
+    },
+  };
+
+  const handleReset = () => {
+    setFormData(initialValue);
+    setOnAddressSelect(
+      initialValue.location
+        ? {
+            position: [
+              initialValue.location.coordinates.coordinates[0],
+              initialValue.location.coordinates.coordinates[1],
+            ],
+            address: initialValue.location.address,
+          }
+        : {
+            position: [23.801417, 90.404926],
+            address: "Banani, Dhaka",
+          }
+    );
+  };
 
   const handleAddressChange = (address) => {
     setOnAddressSelect(address);
@@ -92,8 +122,19 @@ const UpdateBasicInformation = () => {
         />
       </div>
       <div className="w-full flex flex-row gap-4 justify-end items-end">
-        <SaveButton className="w-[200px]" />
-        <ResetButton className="w-[200px]" />
+        <div className="w-full flex flex-row gap-4 justify-end items-end">
+          <IconButton type="submit" label="Save" className="w-[200px]">
+            <FaSave />
+          </IconButton>
+          <IconButton
+            type="button"
+            label="Reset"
+            className="w-[200px]"
+            onClick={handleReset}
+          >
+            <FaTrashRestore />
+          </IconButton>
+        </div>
       </div>
     </form>
   );

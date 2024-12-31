@@ -1,11 +1,12 @@
 import { useAppartments } from "../hooks/useAppartments";
 import AppartmentCard from "../components/AppartmentCard";
 import SearchBar from "../../../components/input/SearchBar";
-import FilterButton from "../components/FilterButton";
 import Pagination from "../../../components/Pagination";
 import LoadingComponent from "../../../components/LoadingComponent";
 import { modalTypes } from "../../../context/modal.slice";
 import { openModal } from "../../../utils/ModalHelper";
+import IconButton from "../../../components/input/IconButton";
+import { FaFilter } from "react-icons/fa";
 
 const AppartmentPage = () => {
   const {
@@ -38,10 +39,13 @@ const AppartmentPage = () => {
           value={search}
           onChange={(e) => handleSearch(e.target.value)}
         />
-        <FilterButton
-          type="button"
+        <IconButton
+          label="Filter"
           onClick={() => openModal(modalTypes.FILTER)}
-        />
+          className="my-2"
+        >
+          <FaFilter />
+        </IconButton>
         <button className="hidden" type="submit"></button>
       </form>
       <div className="w-full px-4 py-4 mx-auto flex justify-center items-center">

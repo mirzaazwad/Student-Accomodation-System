@@ -2,9 +2,10 @@ import { useSelector } from "react-redux";
 import RangeSlider from "../../../components/input/RangeSlider";
 import Select from "../../../components/input/Select";
 import LoadingComponent from "../../../components/LoadingComponent";
-import SaveButton from "./SaveButton";
 import { useState } from "react";
 import { axios } from "../../../utils/RequestHandler";
+import IconButton from "../../../components/input/IconButton";
+import { FaSave } from "react-icons/fa";
 
 const RoommateProfile = () => {
   const [loading, setLoading] = useState(false);
@@ -137,7 +138,11 @@ const RoommateProfile = () => {
         onChange={handleRangeChange}
       />
       <div className="w-full flex flex-row gap-4 justify-end items-end">
-        <SaveButton type="submit" className="w-[200px]" />
+        <div className="w-full flex flex-row gap-4 justify-end items-end">
+          <IconButton type="submit" label="Save" className="w-[200px]">
+            <FaSave />
+          </IconButton>
+        </div>
       </div>
     </form>
   );

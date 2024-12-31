@@ -3,9 +3,10 @@ import ListingCard from "../components/ListingCard";
 import Pagination from "../../../components/Pagination";
 import LoadingComponent from "../../../components/LoadingComponent";
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
-import AddApartmentButton from "../components/AddApartmentButton";
 import { openModal } from "../../../utils/ModalHelper";
 import { modalTypes } from "../../../context/modal.slice";
+import IconButton from "../../../components/input/IconButton";
+import { FaPlus } from "react-icons/fa";
 
 const ListingPage = () => {
   const {
@@ -27,9 +28,12 @@ const ListingPage = () => {
   return (
     <div className="w-full h-screen">
       <div className="w-full p-4 flex justify-end items-end">
-        <AddApartmentButton
+        <IconButton
+          label="Add Apartment"
           onClick={() => openModal(modalTypes.ADD_APARTMENT)}
-        />
+        >
+          <FaPlus />
+        </IconButton>
       </div>
       <TabGroup className="flex flex-col justify-center items-center">
         <TabList className="w-full border-b-2">
