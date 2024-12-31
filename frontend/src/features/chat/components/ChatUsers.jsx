@@ -6,13 +6,13 @@ import LoadingComponent from "../../../components/LoadingComponent";
 
 const ChatUsers = ({ id }) => {
   const [error, setError] = useState("");
-  const [intervalId, setIntervalId] = useState(null);
   const user = useSelector((state) => state.auth.user);
   const [sessions, setSessions] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
 
   const fetchSessions = async () => {
+    setLoading(true);
     try {
       const response = await axios.get("/message");
       setSessions(response.data.sessions);
@@ -23,20 +23,8 @@ const ChatUsers = ({ id }) => {
     }
   };
 
-  const polling = () => {
-    const intervalId = setInterval(fetchSessions, 20000);
-    setIntervalId(intervalId);
-  };
-
   useEffect(() => {
-    polling();
-    return () => {
-      clearInterval(intervalId);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (sessions.length > 0) {
+    if (sessions && sessions.length > 0) {
       const currentSessionId = [user.id, id].sort().join("-");
       const activeIndex = sessions.map((session, index) => {
         if (session._id === currentSessionId) {
@@ -44,8 +32,10 @@ const ChatUsers = ({ id }) => {
         }
       });
       setActiveIndex(activeIndex);
+    } else {
+      fetchSessions();
     }
-  }, [sessions]);
+  }, [sessions, id]);
 
   if (loading) return <LoadingComponent />;
 

@@ -7,6 +7,7 @@ dotenv.config();
 
 MongoDBClient.getInstance().connect(async () => {
   SocketClient.getInstance();
+
   app.listen(process.env.PORT, () => {
     const port = process.env.PORT;
     const env = process.env.NODE_ENV;

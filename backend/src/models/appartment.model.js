@@ -114,7 +114,7 @@ const apartmentSchema = new mongoose.Schema(
         checkOut: { type: mongoose.Schema.Types.Date, required: true },
         status: {
           type: mongoose.Schema.Types.String,
-          enum: ["Approved", "Pending", "Rejected"],
+          enum: ["Paid", "Approved", "Pending", "Rejected"],
           default: "Pending",
         },
         createdAt: { type: mongoose.Schema.Types.Date, default: Date.now },

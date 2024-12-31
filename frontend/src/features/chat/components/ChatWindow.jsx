@@ -5,11 +5,15 @@ import Input from "../../../components/input/Input";
 import { FaPaperPlane } from "react-icons/fa";
 import Message from "./Message";
 import LoadingComponent from "../../../components/LoadingComponent";
+import { useSocket } from "../../../hooks/useSocket";
+import { useSelector } from "react-redux";
 
 const ChatWindow = ({ id }) => {
   const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState([]);
+  const { socket } = useSocket();
+  const user = useSelector((state) => state.auth.user);
 
   const fetchMessages = async () => {
     if (!id) {
@@ -40,16 +44,24 @@ const ChatWindow = ({ id }) => {
 
   const handleSendMessage = async () => {
     try {
-      setLoading(true);
+      socket.emit("message", {
+        content: {
+          message: text,
+          username: user.username,
+          userType: user.userType,
+          id: user.id,
+        },
+        sessionId: [id, user.id].sort().join("-"),
+      });
+
       await axios.post(`/message/create`, {
         message: text,
         receiverId: id,
       });
+
       setText("");
     } catch (error) {
       console.log(error);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -57,6 +69,21 @@ const ChatWindow = ({ id }) => {
     if (!id) {
       return;
     }
+    socket.on("message", (data) => {
+      const sessionId = [id, user.id].sort().join("-");
+      if (data.sessionId === sessionId) {
+        setMessages((prev) => [
+          {
+            message: data.content.message,
+            createdAt: new Date().toISOString(),
+            username: data.content.username,
+            userType: data.content.userType,
+            id: data.content.id,
+          },
+          ...prev,
+        ]);
+      }
+    });
     fetchMessages();
   }, [id]);
 
@@ -89,6 +116,7 @@ const ChatWindow = ({ id }) => {
           placeholder="Type a message..."
         />
         <IconButton
+          type="button"
           onClick={handleSendMessage}
           disabled={loading}
           label={loading ? "Sending..." : "Send"}

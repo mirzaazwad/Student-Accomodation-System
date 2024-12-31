@@ -31,16 +31,6 @@ const RoommatesPage = () => {
           >
             Current Roommates
           </Tab>
-          <Tab
-            onClick={() => handleTabChange(`find`)}
-            className={`p-4 me-4 rounded-t-lg ${
-              currentTab === "find"
-                ? "bg-primary-dark text-white"
-                : "hover:bg-primary text-primary hover:text-white border-t-2 border-l-2 border-r-2 border-primary"
-            }`}
-          >
-            Find Roommates
-          </Tab>
         </TabList>
         <TabPanels className="w-full">
           <TabPanel className={`w-full`}></TabPanel>

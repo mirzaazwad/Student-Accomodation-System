@@ -209,6 +209,37 @@ getBookedAppartments = async (req, res) => {
   }
 };
 
+const addBooking = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { checkIn, checkOut, roommates } = req.body;
+    const apartment = await Apartment.findById(id);
+    if (!apartment) {
+      return res.status(404).json({ message: "Apartment not found" });
+    }
+    const booking = {
+      student: {
+        id: req.user.id,
+        username: req.user.username,
+      },
+      checkIn,
+      checkOut,
+      status: "Pending",
+      roommates,
+    };
+    apartment.bookings.push(booking);
+    await apartment.save();
+    return res.status(201).json({
+      message: "Booking added successfully",
+      booking,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      message: "Failed to add booking: " + error.message,
+    });
+  }
+};
+
 getAvailableApartments = async (req, res) => {
   try {
     const id = req.user.id;
@@ -431,4 +462,5 @@ module.exports = {
   addImages,
   getAvailableApartments,
   getBookedAppartments,
+  addBooking,
 };

@@ -2,16 +2,13 @@ import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 
 export const useSocket = () => {
-  const [socket, setSocket] = useState(null);
+  const socket = io(`${import.meta.env.VITE_SOCKET_URI}`);
   const [connected, setConnected] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const socket = io(import.meta.env.VITE_SOCKET_URI, {
-      autoConnect: false,
-    });
-
     socket.on("connect", () => {
+      console.log("Connected to socket server");
       setConnected(true);
     });
 
@@ -20,10 +17,9 @@ export const useSocket = () => {
     });
 
     socket.on("connect_error", (err) => {
+      console.error(err);
       setError(err.message);
     });
-
-    setSocket(socket);
 
     return () => {
       socket.disconnect();

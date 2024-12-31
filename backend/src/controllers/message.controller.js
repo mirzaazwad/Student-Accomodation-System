@@ -134,12 +134,12 @@ const getMessages = async (req, res) => {
         },
       }
     );
-    console.log(sessionId);
     const messages = await Message.findOne({
       sessionId,
-    }).sort({ createdAt: -1 });
-    console.log(messages);
-    return res.status(200).json(messages ? messages.messages : []);
+    });
+    const textMessages = messages ? messages.messages : [];
+    textMessages.sort((a, b) => b.createdAt - a.createdAt);
+    return res.status(200).json(textMessages);
   } catch (error) {
     return res.status(400).json({
       message: "Failed to fetch messages: " + error.message,
