@@ -20,6 +20,7 @@ import { useSelector } from "react-redux";
 import ListingPage from "./features/listing/pages/ListingPage";
 import ListingDetailsPage from "./features/listing/pages/ListingDetailsPage";
 import HomeNavigator from "./components/HomeNavigator";
+import ChatPage from "./features/chat/pages/ChatPage";
 const ModalRouter = lazy(() => import("./ModalRouter"));
 
 function App() {
@@ -57,6 +58,7 @@ function App() {
             </>
           )}
           <Route path="profile" element={<ProfilePage />} />
+          <Route path="chat" element={<ChatPage />} />
         </Route>
         <Route path="/error404" element={<Error error={"NOT FOUND"} />} />
         <Route path="/error401" element={<Error error={"UNAUTHORIZED"} />} />

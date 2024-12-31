@@ -2,8 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+  height: 100%;
+}
+
+#root {
+  height: 100%;
+  display: flex; /* Use flexbox for proper layout */
+  flex-direction: column; /* Stack elements vertically */
+}
+
 body {
   font-family: Verdana, Geneva, Tahoma, sans-serif;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  height: 100%;
 }
 
 svg.star-svg {

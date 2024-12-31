@@ -11,7 +11,7 @@ const PrivateOutlet = () => {
   }
 
   return auth ? (
-    <div className="w-full max-w-screen h-full max-h-screen flex flex-col">
+    <div className="w-full max-w-screen flex flex-col">
       <LoggedInNavbar />
       <Outlet />
     </div>

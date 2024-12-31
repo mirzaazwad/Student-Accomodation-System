@@ -26,7 +26,7 @@ const ListingPage = () => {
   }
 
   return (
-    <div className="w-full h-screen">
+    <div className="w-full h-full">
       <div className="w-full p-4 flex justify-end items-end">
         <IconButton
           label="Add Apartment"
@@ -65,7 +65,7 @@ const ListingPage = () => {
         )}
         <TabPanels className="w-full">
           <TabPanel className={`w-full`}>
-            <div className="w-full h-screen">
+            <div className="w-full h-full">
               <div className="w-full px-4 py-4 mx-auto flex justify-center items-center">
                 <Pagination
                   totalPages={total}
@@ -85,7 +85,7 @@ const ListingPage = () => {
             </div>
           </TabPanel>
           <TabPanel className={`w-full`}>
-            <div className="w-full h-screen">
+            <div className="w-full h-full">
               <div className="w-full px-4 py-4 mx-auto flex justify-center items-center">
                 <Pagination
                   totalPages={total}

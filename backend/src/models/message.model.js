@@ -1,41 +1,83 @@
 const mongoose = require("mongoose");
+const { userTypes } = require("./user.model");
 
 const messageSchema = new mongoose.Schema(
   {
     messages: [
       {
-        type: mongoose.Schema.Types.String,
-        required: true,
+        type: {
+          message: mongoose.Schema.Types.String,
+          createdAt: mongoose.Schema.Types.Date,
+          sender: {
+            id: {
+              type: mongoose.Schema.Types.ObjectId,
+              ref: "User",
+              required: true,
+            },
+            username: {
+              type: mongoose.Schema.Types.String,
+              required: true,
+            },
+            profilePicture: {
+              type: mongoose.Schema.Types.String,
+            },
+            userType: {
+              type: mongoose.Schema.Types.String,
+              required: true,
+              enum: userTypes,
+            },
+          },
+          receiver: {
+            id: {
+              type: mongoose.Schema.Types.ObjectId,
+              ref: "User",
+              required: true,
+            },
+            username: {
+              type: mongoose.Schema.Types.String,
+              required: true,
+            },
+            profilePicture: {
+              type: mongoose.Schema.Types.String,
+            },
+            userType: {
+              type: mongoose.Schema.Types.String,
+              required: true,
+              enum: userTypes,
+            },
+            seen: {
+              type: mongoose.Schema.Types.Boolean,
+              default: false,
+            },
+          },
+        },
       },
     ],
-    users: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        required: true,
-      },
-    ],
-    sender: {
-      id: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        required: true,
-      },
-      username: {
-        type: mongoose.Schema.Types.String,
-        required: true,
-      },
+    users: {
+      type: [
+        {
+          id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+            required: true,
+          },
+          username: {
+            type: mongoose.Schema.Types.String,
+            required: true,
+          },
+          profilePicture: {
+            type: mongoose.Schema.Types.String,
+          },
+          userType: {
+            type: mongoose.Schema.Types.String,
+            required: true,
+            enum: userTypes,
+          },
+        },
+      ],
     },
-    receiver: {
-      id: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        required: true,
-      },
-      username: {
-        type: mongoose.Schema.Types.String,
-        required: true,
-      },
+    sessionId: {
+      type: mongoose.Schema.Types.String,
     },
   },
   {

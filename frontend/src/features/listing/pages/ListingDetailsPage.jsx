@@ -2,7 +2,6 @@ import MapSearch from "../../../components/Map";
 import LoadingComponent from "../../../components/LoadingComponent";
 import { useParams } from "react-router-dom";
 import ReviewCard from "../components/ReviewCard";
-import AddReviewButton from "../../../components/input/AddReviewButton";
 import { openModal } from "../../../utils/ModalHelper";
 import { modalActions, modalTypes } from "../../../context/modal.slice";
 import { useDispatch } from "react-redux";
@@ -115,16 +114,6 @@ const ListingDetailsPage = () => {
       <div className="w-full lg:mx-4 px-4 py-2 bg-white rounded-lg shadow-md my-4 flex flex-col justify-start items-start">
         <div className="w-full flex flex-row justify-between px-4">
           <h1 className="text-2xl font-semibold my-4">Reviews</h1>
-          <AddReviewButton
-            onClick={() => {
-              dispatch(
-                modalActions.setModalData({
-                  id: id,
-                })
-              );
-              openModal(modalTypes.REVIEW);
-            }}
-          />
         </div>
         <div className="w-full flex flex-col justify-center items-center">
           <div className="w-full m-4 shadow-md rounded-lg">

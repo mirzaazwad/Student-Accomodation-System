@@ -9,6 +9,7 @@ import { useDispatch } from "react-redux";
 import ProfilePicture from "../../../components/input/ProfilePicture";
 import IconButton from "../../../components/input/IconButton";
 import { FaPlus, FaStar } from "react-icons/fa";
+import { FiMessageCircle } from "react-icons/fi";
 
 const AppartmentDetailsPage = () => {
   const id = useParams().id;
@@ -19,6 +20,7 @@ const AppartmentDetailsPage = () => {
     selectedAddress,
     reviews,
     addToFavorites,
+    fetchSession,
   } = useAppartmentDetails(id);
   const dispatch = useDispatch();
 
@@ -59,9 +61,15 @@ const AppartmentDetailsPage = () => {
               <h1 className="text-2xl font-semibold">
                 {appartment.landlord?.username}
               </h1>
-              <h2 className="text-lg font-semibold">
+              <h2 className="text-lg font-semibold mb-4">
                 {appartment.landlord?.email}
               </h2>
+              <IconButton
+                label="Message"
+                onClick={() => fetchSession(appartment.landlord.id)}
+              >
+                <FiMessageCircle />
+              </IconButton>
             </div>
           </div>
         </div>
