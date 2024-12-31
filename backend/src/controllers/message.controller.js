@@ -4,19 +4,17 @@ const { User } = require("../models/user.model");
 const createMessage = async (req, res) => {
   try {
     const { message, receiverId } = req.body;
-    const sender = req.user;
     const receiver = await User.findOne({ _id: receiverId });
-    const ids = [sender.id, receiverId];
+    const ids = [req.user.id, receiverId];
     const sessionId = ids.sort().join("-");
     const newMessage = {
       createdAt: new Date(),
       message,
       sender: {
-        id: sender.id,
-        username: sender.username,
-        profilePicture: sender.profilePicture,
-        userType: sender.userType,
-        seen: true,
+        id: req.user.id,
+        username: req.user.username,
+        profilePicture: req.user.profilePicture,
+        userType: req.user.userType,
       },
       receiver: {
         id: receiverId,

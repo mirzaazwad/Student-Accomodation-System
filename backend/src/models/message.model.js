@@ -45,10 +45,6 @@ const messageSchema = new mongoose.Schema(
               required: true,
               enum: userTypes,
             },
-            seen: {
-              type: mongoose.Schema.Types.Boolean,
-              default: false,
-            },
           },
         },
       },
