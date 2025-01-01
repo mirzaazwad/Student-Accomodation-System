@@ -1,6 +1,8 @@
 const { User } = require("../models/user.model");
 const Apartment = require("../models/appartment.model");
 const bcrypt = require("bcrypt");
+const NotificationHelper = require("../utils/NotificationClient");
+const { omit } = require("lodash");
 
 const addProfilePicture = async (req, res) => {
   try {
@@ -215,6 +217,82 @@ const getUser = async (req, res) => {
   }
 };
 
+const fetchNotificationCount = async (req, res) => {
+  try {
+    const notifications = await NotificationHelper.getNotificationCount(
+      req.user.id
+    );
+    return res.status(200).json(notifications);
+  } catch (error) {
+    return res.status(400).json({
+      message: "Failed to fetch notifications: " + error.message,
+    });
+  }
+};
+
+const findRoommates = async (req, res) => {
+  try {
+    const { preferences, budget, search } = req.body;
+
+    if (!preferences || !budget) {
+      return res.status(400).json({
+        message:
+          "All roommate attributes (preferences, location, budget, moveInDate) are required.",
+      });
+    }
+
+    const roommates = await User.find({
+      username: { $regex: search, $options: "i" },
+      userType: "student",
+      "roommateProfile.budget.maxRent": { $gte: budget.minRent },
+      "roommateProfile.budget.minRent": { $lte: budget.maxRent },
+    });
+
+    const calculateJaccardSimilarity = (setA, setB) => {
+      const intersection = new Set([...setA].filter((x) => setB.has(x)));
+      const union = new Set([...setA, ...setB]);
+      return intersection.size / union.size;
+    };
+
+    const matches = roommates.map((roommate) => {
+      const roommatePreferences = roommate.roommateProfile?.preferences || {};
+      const inputPreferences = {
+        gender: preferences.gender || "no preference",
+        lifestyle: preferences.lifestyle || "no preference",
+        cleanliness: preferences.cleanliness || "no preference",
+      };
+
+      const preferenceKeys = Object.keys(inputPreferences);
+      const setA = new Set(preferenceKeys.map((key) => inputPreferences[key]));
+      const setB = new Set(
+        preferenceKeys.map((key) => roommatePreferences[key])
+      );
+
+      const similarity = calculateJaccardSimilarity(setA, setB);
+
+      return {
+        roommate: omit(roommate.toJSON(), ["password", "otp", "otpType"]),
+        similarity,
+      };
+    });
+
+    const topMatches = matches
+      .sort((a, b) => b.similarity - a.similarity)
+      .slice(0, 6);
+
+    return res.status(200).json({
+      topRoommates: topMatches.map(({ roommate, similarity }) => ({
+        ...roommate,
+        similarity,
+      })),
+    });
+  } catch (error) {
+    return res.status(400).json({
+      message: "Failed to find roommates: " + error.message,
+    });
+  }
+};
+
 module.exports = {
   addProfilePicture,
   changePassword,
@@ -224,4 +302,6 @@ module.exports = {
   updateProfile,
   removeFromFavorites,
   getUser,
+  fetchNotificationCount,
+  findRoommates,
 };

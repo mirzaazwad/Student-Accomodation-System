@@ -86,7 +86,6 @@ const apartmentSchema = new mongoose.Schema(
             },
             username: {
               type: mongoose.Schema.Types.String,
-              required: true,
             },
           },
         },
@@ -102,9 +101,12 @@ const apartmentSchema = new mongoose.Schema(
                 type: mongoose.Schema.Types.String,
                 required: true,
               },
+              profilePicture: {
+                type: mongoose.Schema.Types.String,
+              },
               status: {
                 type: mongoose.Schema.Types.String,
-                enum: ["Accepted", "Pending", "Rejected"],
+                enum: ["Accepted", "Pending"],
                 default: "Pending",
               },
             },
@@ -117,6 +119,7 @@ const apartmentSchema = new mongoose.Schema(
           enum: ["Paid", "Approved", "Pending", "Rejected"],
           default: "Pending",
         },
+        rejectionReason: { type: mongoose.Schema.Types.String, trim: true },
         createdAt: { type: mongoose.Schema.Types.Date, default: Date.now },
       },
     ],

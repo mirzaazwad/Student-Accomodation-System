@@ -29,11 +29,13 @@ const apartmentRoute = require("../routes/appartment.route");
 const auth = require("../routes/auth.route");
 const userRoute = require("../routes/user.route");
 const messageRoute = require("../routes/message.route");
+const requestRoute = require("../routes/request.route");
 
 app.use("/apartment", apartmentRoute);
 app.use("/auth", auth);
 app.use("/user", userRoute);
 app.use("/message", messageRoute);
+app.use("/request", requestRoute);
 
 app.get("/health", (req, res) => {
   res.send("Backend is running");

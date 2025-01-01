@@ -1,5 +1,6 @@
 const Message = require("../models/message.model");
 const { User } = require("../models/user.model");
+const NotificationHelper = require("../utils/NotificationClient");
 
 const createMessage = async (req, res) => {
   try {
@@ -41,7 +42,11 @@ const createMessage = async (req, res) => {
         upsert: true,
       }
     );
-
+    await NotificationHelper.addNotification({
+      payload: message,
+      receiver: receiverId,
+      type: "Message",
+    });
     return res.status(201).json({
       message: "Message sent successfully",
       newMessage,

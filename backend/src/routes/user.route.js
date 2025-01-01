@@ -8,6 +8,8 @@ const {
   getUser,
   updateProfile,
   removeFromFavorites,
+  fetchNotificationCount,
+  findRoommates,
 } = require("../controllers/user.controller");
 const { roleMiddleware } = require("../middlewares/role.middleware");
 const { withSingleFile } = require("../middlewares/storage.middleware");
@@ -41,5 +43,7 @@ router.post(
 );
 router.patch("/update-profile", updateProfile);
 router.get("/fetch", getUser);
+router.get("/notification-count", fetchNotificationCount);
+router.post("/roommates", findRoommates);
 
 module.exports = router;

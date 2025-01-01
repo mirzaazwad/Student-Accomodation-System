@@ -8,8 +8,9 @@ const SecondaryButton = (props) => {
         className="bg-primary lg:w-1/2 w-full text-center font-bold hover:bg-primary-dark text-white font-medium px-4 py-2 flex rounded-xl"
         onClick={props.onClick}
         disabled={props.disabled}
+        {...props}
       >
-        <Spinner variant="primary" />
+        {props.disabled && <Spinner variant="primary" />}
         {props.children}
       </button>
     </div>

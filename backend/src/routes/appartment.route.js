@@ -11,6 +11,7 @@ const {
   addImages,
   getAvailableApartments,
   getBookedAppartments,
+  addBooking,
 } = require("../controllers/apartment.controller");
 const { roleMiddleware } = require("../middlewares/role.middleware");
 const { withMultipleFiles } = require("../middlewares/storage.middleware");
@@ -44,5 +45,6 @@ router.get(
   getAvailableApartments
 );
 router.get("/fetch/booked", roleMiddleware("landlord"), getBookedAppartments);
+router.post("/book/:id", roleMiddleware("student"), addBooking);
 
 module.exports = router;

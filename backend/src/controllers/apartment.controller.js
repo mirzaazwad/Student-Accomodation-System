@@ -1,6 +1,8 @@
 const Apartment = require("../models/appartment.model");
+const Requests = require("../models/requests.model");
 const { getUserById } = require("../controllers/user.controller");
 const { toMongoID } = require("../utils/Helper");
+const NotificationHelper = require("../utils/NotificationClient");
 
 const createApartment = async (req, res) => {
   try {
@@ -17,6 +19,14 @@ const createApartment = async (req, res) => {
       images,
     });
     await apartment.save();
+    await NotificationHelper.addNotification(
+      {
+        receiver: apartment.landlord,
+        payload: `A new apartment has been listed with the title: ${apartment.title}`,
+        type: "New Apartment",
+      },
+      true
+    );
     return res.status(201).json({
       message: "Apartment created successfully",
       apartment,
@@ -227,8 +237,25 @@ const addBooking = async (req, res) => {
       status: "Pending",
       roommates,
     };
+    await Promise.all(
+      roommates.map(async (roommate) => {
+        const request = new Requests({
+          requester: req.user.id,
+          requestee: roommate.id,
+          apartment: id,
+          status: "Pending",
+        });
+        await request.save();
+      })
+    );
+
     apartment.bookings.push(booking);
     await apartment.save();
+    await NotificationHelper.addNotification({
+      receiver: apartment.landlord,
+      payload: `You have a new booking request on your apartment: ${apartment.title}`,
+      type: "Booking",
+    });
     return res.status(201).json({
       message: "Booking added successfully",
       booking,
@@ -326,7 +353,16 @@ const updateApartment = async (req, res) => {
     if (!apartment) {
       return res.status(404).json({ message: "Apartment not found" });
     }
-
+    await NotificationHelper.addNotification(
+      {
+        receiver: apartment.landlord,
+        payload:
+          `Listed Apartment updated with the title: ${apartment.title} ` +
+          JSON.stringify(updates),
+        type: "New Apartment",
+      },
+      true
+    );
     return res.status(200).json({
       message: "Apartment updated successfully",
       apartment,
@@ -383,7 +419,11 @@ const addReview = async (req, res) => {
 
     apartment.reviews.push(review);
     await apartment.save();
-
+    await NotificationHelper.addNotification({
+      receiver: apartment.landlord,
+      payload: `You have a new review on your apartment: ${apartment.title}`,
+      type: "Review",
+    });
     return res.status(201).json({
       message: "Review added successfully",
       review,
@@ -446,6 +486,30 @@ const deleteReview = async (req, res) => {
   } catch (error) {
     return res.status(400).json({
       message: "Failed to delete review: " + error.message,
+    });
+  }
+};
+
+const updateBookingStatus = async (req, res) => {
+  try {
+    const { apartmentId, bookingId } = req.params;
+    const { status } = req.body;
+    const apartment = await Apartment.findById(apartmentId);
+    if (!apartment) {
+      return res.status(404).json({ message: "Apartment not found" });
+    }
+    const booking = apartment.bookings.find(
+      (booking) => booking._id.toString() === bookingId
+    );
+    if (!booking) {
+      return res.status(404).json({ message: "Booking not found" });
+    }
+    booking.status = status;
+    await apartment.save();
+    return res.status(200).json({ message: "Booking updated successfully" });
+  } catch (error) {
+    return res.status(400).json({
+      message: "Failed to update booking: " + error.message,
     });
   }
 };

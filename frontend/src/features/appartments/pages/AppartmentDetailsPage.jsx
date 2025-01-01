@@ -8,7 +8,7 @@ import { modalActions, modalTypes } from "../../../context/modal.slice";
 import { useDispatch } from "react-redux";
 import ProfilePicture from "../../../components/input/ProfilePicture";
 import IconButton from "../../../components/input/IconButton";
-import { FaPlus, FaStar } from "react-icons/fa";
+import { FaBook, FaPlus, FaStar } from "react-icons/fa";
 import { FiMessageCircle } from "react-icons/fi";
 
 const AppartmentDetailsPage = () => {
@@ -38,14 +38,30 @@ const AppartmentDetailsPage = () => {
   }
   return (
     <div className="w-full lg:mx-4 my-6 p-4 bg-white justify-end items-end flex flex-col">
-      <IconButton
-        label="Add to Favorites"
-        className="my-2"
-        iconClassName={appartment.isFavorite ? "text-yellow-200" : ""}
-        onClick={addToFavorites}
-      >
-        <FaStar />
-      </IconButton>
+      <div className="w-full flex flex-row justify-end mx-4 my-2">
+        <IconButton
+          label="Add to Favorites"
+          className="my-2 me-2"
+          iconClassName={appartment.isFavorite ? "text-yellow-200" : ""}
+          onClick={addToFavorites}
+        >
+          <FaStar />
+        </IconButton>
+        <IconButton
+          label="Book This Apartment"
+          className="my-2"
+          onClick={() => {
+            dispatch(
+              modalActions.setModalData({
+                id: id,
+              })
+            );
+            openModal(modalTypes.BOOKING);
+          }}
+        >
+          <FaBook />
+        </IconButton>
+      </div>
       <div className="w-full flex flex-col lg:flex-row">
         <div className="w-full lg:mx-4 lg:h-[350px] md:w-3/4 lg:w-1/2 flex flex-col gap-4 rounded-lg shadow-md my-4">
           <h1 className="text-2xl font-bold mx-4 px-4 py-2">

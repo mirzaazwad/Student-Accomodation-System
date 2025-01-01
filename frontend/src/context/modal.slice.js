@@ -11,6 +11,7 @@ export const modalTypes = {
   FILTER: "FILTER",
   ADD_APARTMENT: "ADD_APARTMENT",
   EDIT_APARTMENT: "EDIT_APARTMENT",
+  BOOKING: "BOOKING",
 };
 
 export const modalSlice = createSlice({

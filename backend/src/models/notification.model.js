@@ -20,7 +20,13 @@ const notificationSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.String,
       required: true,
       trim: true,
-      enum: ["message", "booking", "review", "roommateReview"],
+      enum: [
+        "Message",
+        "Booking",
+        "Review",
+        "Roommate Request",
+        "New Apartment",
+      ],
     },
   },
   {
