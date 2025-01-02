@@ -25,8 +25,9 @@ const ChatWindow = ({ id }) => {
               message={message.message}
               id={message.id}
               createdAt={message.createdAt}
-              username={""}
-              userType={""}
+              username={message.username}
+              userType={message.userType}
+              profilePicture={message.profilePicture}
             />
           ))}
       </div>

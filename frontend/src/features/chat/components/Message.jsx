@@ -1,6 +1,13 @@
 import { useSelector } from "react-redux";
 
-const Message = ({ id, message, username, profilePicture, createdAt }) => {
+const Message = ({
+  id,
+  message,
+  username,
+  profilePicture,
+  userType,
+  createdAt,
+}) => {
   const user = useSelector((state) => state.auth.user);
   const isSender = user.id === id;
 
@@ -10,9 +17,9 @@ const Message = ({ id, message, username, profilePicture, createdAt }) => {
         isSender ? "justify-end items-end" : "justify-start items-start"
       }`}
     >
-      <div className="w-fit h-fit">
+      <div className="w-fit min-w-[72px] h-fit">
         <div className="flex items-end flex-col">
-          <div className="text-xs text-gray-500">{username}</div>
+          <div className="text-xs text-gray-500 mb-1">{username}</div>
           <div className={`w-full flex flex-shrink-0`}>
             <img
               src={
@@ -20,7 +27,9 @@ const Message = ({ id, message, username, profilePicture, createdAt }) => {
                   ? import.meta.env.VITE_APP_API_URL + "/" + profilePicture
                   : "/profile-picture.png"
               }
-              className="w-16 h-16 rounded-full p-4"
+              className={`w-8 h-8 rounded-full m-4 border-2 ${
+                userType === "student" ? "border-primary" : "border-green-600"
+              }`}
             />
             <div
               className={`flex items-start justify-start p-4 h-12 rounded-lg ${

@@ -14,15 +14,16 @@ export const useChatUsers = (id) => {
     try {
       const response = await axios.get("/message");
       const modifiedSessions = response.data.sessions.map((session) => {
-        const currentUser =
+        const chatUser =
           session.users[0].id === user.id ? session.users[1] : session.users[0];
         return {
-          id: currentUser.id,
-          username: currentUser.username,
-          userType: currentUser.userType,
-          profilePicture: currentUser.profilePicture,
+          id: chatUser.id,
+          username: chatUser.username,
+          userType: chatUser.userType,
+          profilePicture: chatUser.profilePicture,
         };
       });
+      console.log(response.data.sessions);
       setSessions(modifiedSessions);
     } catch (error) {
       setError(error.response.data.message || "Failed to fetch sessions");

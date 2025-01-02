@@ -26,6 +26,7 @@ export const useChatWindow = (id) => {
             createdAt: message.createdAt,
             username: message.sender.username,
             userType: message.sender.userType,
+            profilePicture: message.sender.profilePicture,
             id: message.sender.id,
           },
         ]);
@@ -46,6 +47,7 @@ export const useChatWindow = (id) => {
           userType: user.userType,
           id: user.id,
           receiverId: id,
+          profilePicture: user.profilePicture,
         },
         sessionId: [id, user.id].sort().join("-"),
       });
@@ -69,6 +71,7 @@ export const useChatWindow = (id) => {
             createdAt: new Date().toISOString(),
             username: data.content.username,
             userType: data.content.userType,
+            profilePicture: data.content.profilePicture,
             id: data.content.id,
           },
           ...prev,

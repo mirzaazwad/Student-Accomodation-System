@@ -25,16 +25,16 @@ const handleChatMessage = async (socket, data) => {
     }
 
     socket.emit("chat:ack", { sessionId, status: "received" });
-    const { message, receiverId, username, userType, id } = content;
+    const { message, receiverId, username, userType, id, profilePicture } =
+      content;
     const receiver = await User.findOne({ _id: receiverId });
-    const sender = await User.findOne({ _id: id }).select("profilePicture");
     const newMessage = {
       createdAt: new Date(),
       message,
       sender: {
         id,
         username: username,
-        profilePicture: sender.profilePicture,
+        profilePicture: profilePicture,
         userType: userType,
       },
       receiver: {
