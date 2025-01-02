@@ -8,12 +8,10 @@ class NotificationClient {
       const notification = new Notification(data);
       await notification.save();
       if (!isBulk) {
-        console.log(data);
         const user = await User.findById(data.receiver);
         if (!user) {
           throw new Error("User not found");
         }
-        console.log(user);
         await EmailService.sendEmail(
           user.email,
           "New Notification for " + data.type,
@@ -22,7 +20,11 @@ class NotificationClient {
       } else {
         const users = await User.find({});
         for (const user of users) {
-          await EmailService.sendEmail(user.email, "New Notification for "+data.type, data.payload);
+          await EmailService.sendEmail(
+            user.email,
+            "New Notification for " + data.type,
+            data.payload
+          );
         }
       }
     } catch (error) {

@@ -37,7 +37,6 @@ const updateProfile = async (req, res) => {
       { _id: user.id },
       { $set: updatedUser }
     );
-    console.log(updateResult);
     return res.status(200).json({
       message: "Profile Updated Successfully",
       user: updatedUser,
@@ -99,7 +98,6 @@ const roommateInformation = async (req, res) => {
       { _id: user.id },
       { $set: { roommateProfile: updatedRoommateInfo } }
     );
-    console.log(updateResult);
     return res.status(200).json({
       message: "Roommate Information Added Successfully",
       roommates: updatedRoommateInfo,

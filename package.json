@@ -4,7 +4,9 @@
   "description": "Student Accomodation System BRAC CSE 470",
   "main": "index.js",
   "scripts": {
-    "backend": "cd backend && npm run dev",
+    "core": "cd backend/core && npm run dev",
+    "worker": "cd backend/worker && npm run dev",
+    "backend": "concurrently \"npm run core\" \"npm run worker\"",
     "frontend": "cd frontend && npm run dev",
     "dev": "concurrently \"npm run backend\" \"npm run frontend\""
   },
