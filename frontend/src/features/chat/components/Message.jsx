@@ -22,11 +22,7 @@ const Message = ({
           <div className="text-xs text-gray-500 mb-1">{username}</div>
           <div className={`w-full flex flex-shrink-0`}>
             <img
-              src={
-                profilePicture
-                  ? import.meta.env.VITE_APP_API_URL + "/" + profilePicture
-                  : "/profile-picture.png"
-              }
+              src={profilePicture ? profilePicture : "/profile-picture.png"}
               className={`w-8 h-8 rounded-full m-4 border-2 ${
                 userType === "student" ? "border-primary" : "border-green-600"
               }`}

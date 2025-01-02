@@ -3,6 +3,8 @@ const Requests = require("../models/requests.model");
 const { getUserById } = require("../controllers/user.controller");
 const { toMongoID } = require("../utils/Helper");
 const NotificationHelper = require("../utils/NotificationClient");
+const StorageClient = require("../providers/storage");
+const fs = require("fs");
 
 const createApartment = async (req, res) => {
   try {
@@ -41,7 +43,14 @@ const createApartment = async (req, res) => {
 const addImages = async (req, res) => {
   try {
     const { id } = req.params;
-    const images = req.files.map((file) => file.path);
+    const images = await Promise.all(
+      req.files.map(async (file) => {
+        const { public_id } = await StorageClient.uploadFromPath(file.path);
+        const url = await StorageClient.getUrlByFileKey(public_id);
+        fs.unlinkSync(file.path);
+        return url;
+      })
+    );
     const apartment = await Apartment.updateOne(
       { _id: id },
       {
@@ -50,6 +59,7 @@ const addImages = async (req, res) => {
         },
       }
     );
+
     return res.status(200).json({
       message: "Images added successfully",
       apartment,

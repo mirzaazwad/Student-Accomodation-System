@@ -22,11 +22,7 @@ const ChatUserCard = ({
       <div className="flex items-center justify-between">
         <div className="flex items-center">
           <img
-            src={
-              profilePicture
-                ? import.meta.env.VITE_APP_API_URL + "/" + profilePicture
-                : "/profile-picture.png"
-            }
+            src={profilePicture ? profilePicture : "/profile-picture.png"}
             className="w-16 h-16 rounded-full p-4"
           />
           <div className="flex flex-col">

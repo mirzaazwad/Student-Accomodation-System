@@ -12,7 +12,7 @@ const AppartmentCard = ({ appartment }) => {
     >
       <div className="w-full">
         <img
-          src={`${import.meta.env.VITE_APP_API_URL}/${appartment.images[0]}`}
+          src={appartment.images[0]}
           alt="appartment"
           className="w-full h-48 object-cover rounded-lg"
         />

@@ -3,15 +3,20 @@ const Apartment = require("../models/appartment.model");
 const bcrypt = require("bcrypt");
 const NotificationHelper = require("../utils/NotificationClient");
 const { omit } = require("lodash");
+const StorageClient = require("../providers/storage");
+const fs = require("fs");
 
 const addProfilePicture = async (req, res) => {
   try {
     const { user, file } = req;
-    user.profilePicture = file.path;
-    await User.updateOne({ _id: user.id }, { profilePicture: file.path });
+    const { public_id } = await StorageClient.uploadFromPath(file.path);
+    const url = await StorageClient.getUrlByFileKey(public_id);
+    user.profilePicture = url;
+    await User.updateOne({ _id: user.id }, { profilePicture: url });
+    fs.unlinkSync(file.path);
     return res.status(200).json({
       message: "Profile Picture Added Successfully",
-      profilePicture: file.path,
+      profilePicture: url,
     });
   } catch (error) {
     return res.status(400).json({

@@ -103,7 +103,7 @@ const ListingDetailsPage = () => {
             appartment.images.length > 0 &&
             appartment.images.map((image, index) => (
               <img
-                src={`${import.meta.env.VITE_APP_API_URL}/${image}`}
+                src={image}
                 key={index}
                 alt="appartment"
                 className="w-fit h-48 object-cover rounded-lg"

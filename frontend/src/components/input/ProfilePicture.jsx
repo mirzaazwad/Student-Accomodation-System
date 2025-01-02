@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import LoadingComponent from "../LoadingComponent";
 import { axios } from "../../utils/RequestHandler";
 import { FaCamera } from "react-icons/fa";
@@ -8,7 +8,7 @@ import { authActions } from "../../context/auth.slice";
 const ProfilePicture = (props) => {
   const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
-  const [imageUrl, setImageUrl] = useState("/profile-picture.png");
+  const [imageUrl, setImageUrl] = useState(props.src ?? "/profile-picture.png");
   const [loading, setLoading] = useState(false);
   const imageRef = useRef(null);
 
@@ -28,18 +28,13 @@ const ProfilePicture = (props) => {
           profilePicture: response.data.profilePicture,
         })
       );
+      setImageUrl(response.data.profilePicture);
     } catch (error) {
       console.error("Failed to upload image:", error);
     } finally {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    if (props.src) {
-      setImageUrl(`${import.meta.env.VITE_APP_API_URL}/${props.src}`);
-    }
-  }, [props.src]);
 
   if (loading) return <LoadingComponent />;
 

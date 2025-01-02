@@ -80,10 +80,7 @@ const EditApartmentModal = () => {
         address: response.data.location.address,
       });
       response.data.images.map((image) =>
-        setPreviews((prev) => [
-          ...prev,
-          `${import.meta.env.VITE_APP_API_URL}/${image}`,
-        ])
+        setPreviews((prev) => [...prev, image])
       );
     } catch (error) {
       setError(
@@ -110,7 +107,7 @@ const EditApartmentModal = () => {
       }
       setLoading(false);
       closeModal();
-      navigate("/listing/" + id);
+      navigate("/listing");
     } catch (error) {
       setError(error.response?.data.message ?? "Failed to update apartment");
     } finally {

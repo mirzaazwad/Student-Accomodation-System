@@ -13,7 +13,7 @@ const ListingCard = ({ appartment }) => {
       <div className="w-full flex flex-ro">
         <div className="w-full mx-4 rounded-lg">
           <img
-            src={`${import.meta.env.VITE_APP_API_URL}/${appartment.images[0]}`}
+            src={appartment.images[0]}
             alt="appartment"
             className="w-full h-48 object-cover rounded-lg"
           />
