@@ -20,7 +20,7 @@ class MongoDBClient {
     });
 
     mongoose.connection.on("connected", () => {
-      log("info", "✅ Mongoose connected successfully");
+      log("info", "✅ Mongoose connected successfully for worker service");
     });
 
     mongoose.connection.on("error", (err) => {

@@ -1,63 +1,5 @@
 const Message = require("../models/message.model");
 const { User } = require("../models/user.model");
-const NotificationHelper = require("../utils/NotificationClient");
-
-const createMessage = async (req, res) => {
-  try {
-    const { message, receiverId } = req.body;
-    const receiver = await User.findOne({ _id: receiverId });
-    const ids = [req.user.id, receiverId];
-    const sessionId = ids.sort().join("-");
-    const newMessage = {
-      createdAt: new Date(),
-      message,
-      sender: {
-        id: req.user.id,
-        username: req.user.username,
-        profilePicture: req.user.profilePicture,
-        userType: req.user.userType,
-      },
-      receiver: {
-        id: receiverId,
-        username: receiver.username,
-        profilePicture: receiver.profilePicture,
-        userType: receiver.userType,
-      },
-    };
-    if (!receiver) {
-      return res.status(404).json({ message: "Receiver not found" });
-    }
-    await Message.updateOne(
-      {
-        sessionId,
-      },
-      {
-        $push: {
-          messages: {
-            ...newMessage,
-          },
-        },
-      },
-      {
-        upsert: true,
-      }
-    );
-    await NotificationHelper.addNotification({
-      payload: message,
-      receiver: receiverId,
-      type: "Message",
-    });
-    return res.status(201).json({
-      message: "Message sent successfully",
-      newMessage,
-    });
-  } catch (error) {
-    console.error(error);
-    return res.status(400).json({
-      message: "Failed to send message: " + error.message,
-    });
-  }
-};
 
 const fetchSession = async (req, res) => {
   try {
@@ -150,4 +92,4 @@ const getMessages = async (req, res) => {
   }
 };
 
-module.exports = { createMessage, getMessages, fetchSession, getSessions };
+module.exports = { getMessages, fetchSession, getSessions };

@@ -39,19 +39,15 @@ export const useChatWindow = (id) => {
 
   const handleSendMessage = async () => {
     try {
-      socket.emit("message", {
+      socket.emit("chat", {
         content: {
           message: text,
           username: user.username,
           userType: user.userType,
           id: user.id,
+          receiverId: id,
         },
         sessionId: [id, user.id].sort().join("-"),
-      });
-
-      await axios.post(`/message/create`, {
-        message: text,
-        receiverId: id,
       });
 
       setText("");
@@ -64,7 +60,7 @@ export const useChatWindow = (id) => {
     if (!id) {
       return;
     }
-    socket.on("message", (data) => {
+    socket.on("chat", (data) => {
       const sessionId = [id, user.id].sort().join("-");
       if (data.sessionId === sessionId) {
         setMessages((prev) => [

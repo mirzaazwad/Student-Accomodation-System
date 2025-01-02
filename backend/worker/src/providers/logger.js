@@ -12,6 +12,7 @@ const logger = new Logger({
     )
   ),
   transports: [
+    new transports.Console(),
     new transports.File({
       level: "error",
       filename: path.resolve(__dirname, "../../report/log/error.log"),

@@ -1,11 +1,14 @@
 const { log } = require("../providers/logger");
+const Message = require("../models/message.model");
+const { User } = require("../models/user.model");
+const NotificationHelper = require("../utils/NotificationClient");
 
 /**
  * Handle incoming messages from a connected socket
  * @param {Object} socket - Socket instance
  * @param {Object} data - Message data
  */
-const handleChatMessage = (socket, data) => {
+const handleChatMessage = async (socket, data) => {
   try {
     if (!data || typeof data !== "object") {
       log("warn", `⛔️ Invalid message format: ${JSON.stringify(data)}`);
@@ -21,16 +24,50 @@ const handleChatMessage = (socket, data) => {
       return;
     }
 
-    log(
-      "info",
-      `✅ Message received from ${socket.id} - ID: ${sessionId}, Content: ${content}`
+    socket.emit("chat:ack", { sessionId, status: "received" });
+    const { message, receiverId, username, userType, id } = content;
+    const receiver = await User.findOne({ _id: receiverId });
+    const sender = await User.findOne({ _id: id }).select("profilePicture");
+    const newMessage = {
+      createdAt: new Date(),
+      message,
+      sender: {
+        id,
+        username: username,
+        profilePicture: sender.profilePicture,
+        userType: userType,
+      },
+      receiver: {
+        id: receiverId,
+        username: receiver.username,
+        profilePicture: receiver.profilePicture,
+        userType: receiver.userType,
+      },
+    };
+    if (!receiver) {
+      return res.status(404).json({ message: "Receiver not found" });
+    }
+    await Message.updateOne(
+      {
+        sessionId,
+      },
+      {
+        $push: {
+          messages: {
+            ...newMessage,
+          },
+        },
+      },
+      {
+        upsert: true,
+      }
     );
-
-    // Acknowledge the message
-    socket.emit("message:ack", { sessionId, status: "received" });
-
-    // Broadcast the message to other clients
-    socket.broadcast.emit("message", { sessionId, content });
+    await NotificationHelper.addNotification({
+      payload: message,
+      receiver: receiverId,
+      type: "Message",
+    });
+    socket.broadcast.emit("chat", { sessionId, content });
   } catch (error) {
     log("error", `⛔️ Error handling message: ${error.message}`);
   }
