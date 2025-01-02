@@ -15,10 +15,10 @@ const RoommateCard = ({ request, showAccept }) => {
   const fetchSession = async (receiverId) => {
     setLoading(true);
     try {
-      const response = await axios.post(`/message/session`, {
+      await axios.post(`/message/session`, {
         receiverId,
       });
-      navigate(`/chat?id=${response.data.sessionId}`);
+      navigate(`/chat?id=${receiverId}`);
     } catch (error) {
       setError(error.response.data.message || "Failed to create session");
     } finally {
