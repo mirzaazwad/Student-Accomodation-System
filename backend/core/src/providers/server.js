@@ -30,12 +30,14 @@ const auth = require("../routes/auth.route");
 const userRoute = require("../routes/user.route");
 const messageRoute = require("../routes/message.route");
 const requestRoute = require("../routes/request.route");
+const transactionRoute = require("../routes/transaction.route");
 
 app.use("/apartment", apartmentRoute);
 app.use("/auth", auth);
 app.use("/user", userRoute);
 app.use("/message", messageRoute);
 app.use("/request", requestRoute);
+app.use("/transaction", transactionRoute);
 
 app.get("/health", (req, res) => {
   res.send("Backend is running");

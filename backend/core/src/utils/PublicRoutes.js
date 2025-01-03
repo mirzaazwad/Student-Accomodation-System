@@ -9,6 +9,10 @@ const UNPREOTECTED_ROUTES = [
   "/auth/logout",
   "/health",
   "/upload",
+  "/transaction/success",
+  "/transaction/fail",
+  "/transaction/cancel",
+  "/transaction/ipn",
 ];
 
 const isPublicRoute = (path) => {
