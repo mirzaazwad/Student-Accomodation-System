@@ -9,7 +9,7 @@ const transactionSchema = new mongoose.Schema(
           ref: "User",
           required: true,
         },
-        name: {
+        username: {
           type: mongoose.Schema.Types.String,
           required: true,
         },
@@ -40,27 +40,13 @@ const transactionSchema = new mongoose.Schema(
           ref: "User",
           required: true,
         },
-        name: {
+        username: {
           type: mongoose.Schema.Types.String,
           required: true,
         },
         email: {
           type: mongoose.Schema.Types.String,
           required: true,
-        },
-        location: {
-          address: {
-            type: mongoose.Schema.Types.String,
-            required: true,
-          },
-          coordinates: {
-            type: {
-              type: mongoose.Schema.Types.String,
-              enum: ["Point"],
-              default: "Point",
-            },
-            coordinates: { type: [Number], required: true },
-          },
         },
       },
     },

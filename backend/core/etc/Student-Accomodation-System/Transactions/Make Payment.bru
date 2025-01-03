@@ -1,0 +1,24 @@
+meta {
+  name: Make Payment
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/transaction/make-payment
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+body:json {
+  {
+    "from":"67665d0c97374c99101fc2aa",
+    "to":"676bb22b28fb70310dc2835c",
+    "amount":500,
+    "appartmentId":"676d1456e7aa70757be2c096"
+  }
+}

@@ -3,6 +3,7 @@ const Transaction = require("../models/transaction.model");
 const { User } = require("../models/user.model");
 const { SSLCommerzService } = require("../providers/sslcommerz");
 const bcrypt = require("bcrypt");
+const { toMongoID } = require("../utils/Helper");
 
 const initiatePaymment = async (req, res) => {
   try {
@@ -10,15 +11,22 @@ const initiatePaymment = async (req, res) => {
     const fromUser = await User.findById(from);
     const toUser = await User.findById(to);
     const appartment = await Apartment.findById(appartmentId);
-    if (!fromUser || !toUser || !appartment) {
-      return res.status(404).json({ message: "User or appartment not found" });
+    if (!fromUser) {
+      return res.status(404).json({ message: "From user not found" });
     }
+    if (!toUser) {
+      return res.status(404).json({ message: "To user not found" });
+    }
+    if (!appartment) {
+      return res.status(404).json({ message: "Appartment not found" });
+    }
+
     const hash = await bcrypt.hash(`${from}${to}${amount}${appartmentId}`, 10);
     const transaction = new Transaction({
       from: fromUser,
       to: toUser,
       amount,
-      appartment: {
+      apartment: {
         id: appartment._id,
         title: appartment.title,
         location: appartment.location,
@@ -97,7 +105,6 @@ const ipn = async (req, res) => {
   try {
     const transactionId = req.query.transaction_id;
     const hash = req.query.hash;
-    console.log(req.body);
     const transaction = await Transaction.findById(transactionId);
     if (!transaction) {
       return res.status(404).json({ message: "Transaction not found" });
@@ -105,9 +112,29 @@ const ipn = async (req, res) => {
     if (transaction.hash !== hash) {
       return res.status(401).json({ message: "Unauthorized transaction" });
     }
-    transaction.status = "Successful";
-    await transaction.save();
-    return res.status(200).json({ message: "Payment successful" });
+    throw Error("IPN not implemented");
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+const getTransactionsForLandlord = async (req, res) => {
+  try {
+    const transactions = await Transaction.find({
+      "to._id": toMongoID(req.user.id),
+    });
+    return res.status(200).json(transactions);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+const getTransactionsForStudent = async (req, res) => {
+  try {
+    const transactions = await Transaction.find({
+      "from._id": toMongoID(req.user.id),
+    });
+    return res.status(200).json(transactions);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -119,4 +146,6 @@ module.exports = {
   failedPayment,
   cancelPayment,
   ipn,
+  getTransactionsForLandlord,
+  getTransactionsForStudent,
 };

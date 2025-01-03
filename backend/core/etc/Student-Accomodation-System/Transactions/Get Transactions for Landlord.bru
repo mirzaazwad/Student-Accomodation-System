@@ -1,0 +1,15 @@
+meta {
+  name: Get Transactions for Landlord
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/transaction/landlord
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
