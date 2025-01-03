@@ -104,11 +104,6 @@ const apartmentSchema = new mongoose.Schema(
               profilePicture: {
                 type: mongoose.Schema.Types.String,
               },
-              status: {
-                type: mongoose.Schema.Types.String,
-                enum: ["Accepted", "Pending"],
-                default: "Pending",
-              },
             },
           },
         ],
