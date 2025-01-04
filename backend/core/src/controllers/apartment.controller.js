@@ -289,6 +289,14 @@ const addBooking = async (req, res) => {
       status: "Pending",
       roommates,
     };
+    apartment.bookings.push(booking);
+    await apartment.save();
+    const updatedBooking = await Apartment.findById(id)
+      .populate("bookings.roommates.id")
+      .populate("landlord", "username email");
+    const updatedBookingInformation = updatedBooking.bookings.find(
+      (booking) => booking.student.id.toString() === req.user.id
+    );
     await Promise.all(
       roommates.map(async (roommate) => {
         const request = new Requests({
@@ -296,13 +304,12 @@ const addBooking = async (req, res) => {
           requestee: roommate.id,
           apartment: id,
           status: "Pending",
+          booking: updatedBookingInformation._id,
         });
         await request.save();
       })
     );
 
-    apartment.bookings.push(booking);
-    await apartment.save();
     await NotificationHelper.addNotification({
       receiver: apartment.landlord,
       payload: `You have a new booking request on your apartment: ${apartment.title}`,
