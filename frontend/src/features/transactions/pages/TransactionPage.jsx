@@ -2,10 +2,12 @@ import { useTransaction } from "../hooks/useTransaction";
 import LoadingComponent from "../../../components/LoadingComponent";
 import TransactionCard from "../components/TransactionCard";
 import Pagination from "../../../components/Pagination";
+import { useSelector } from "react-redux";
 
 const TransactionPage = () => {
   const { page, setPage, limit, error, total, loading, transactions } =
     useTransaction();
+  const user = useSelector((state) => state.auth.user);
 
   if (loading) {
     return <LoadingComponent />;
@@ -29,7 +31,9 @@ const TransactionPage = () => {
           <TransactionCard
             key={index}
             transaction={transaction}
-            showGateway={transaction.status !== "VALID"}
+            showGateway={
+              transaction.status !== "VALID" && user.userType === "student"
+            }
           />
         ))}
     </div>
