@@ -5,6 +5,7 @@ import LoadingComponent from "../../../components/LoadingComponent";
 import { axios } from "../../../utils/RequestHandler";
 import IconButton from "../../../components/input/IconButton";
 import { FaCashRegister, FaCheck, FaHouseUser } from "react-icons/fa";
+import RoommateCard from "./RoommateCard";
 
 const Bookings = () => {
   const getStyle = (status) => {
@@ -103,26 +104,38 @@ const Bookings = () => {
               key={index}
               className="w-full m-2 p-4 flex-shrink-0 flex flex-col items-center gap-4 rounded-lg shadow-md justify-center items-start"
             >
-              <div className="w-full flex flex-col items-start justify-start">
-                <div className="w-full flex flex-row justify-between items-center">
+              <div className="w-full flex flex-col items-start justify-start p-4">
+                <div className="w-full flex rounded-t-lg bg-primary p-2 text-white my-2">
                   <h1 className="text-xl font-semibold">{booking.title}</h1>
-                  <div
-                    className={`text-lg font-semibold px-2 py-1 rounded-lg mx-4 ${getStyle(
-                      booking.status
-                    )}`}
-                  >
-                    {booking.status}
+                </div>
+                <div className="w-full flex flex-col items-start justify-start p-4">
+                  <div className="w-full flex flex-row justify-between items-start">
+                    <h2 className="text-lg font-semibold px-2 py-1">
+                      {booking.location.address}
+                    </h2>
+                    <div
+                      className={`text-lg font-semibold px-2 py-1 rounded-lg mx-2 ${getStyle(
+                        booking.status
+                      )}`}
+                    >
+                      {booking.status}
+                    </div>
+                  </div>
+                  <p className="text-gray-600">{booking.description}</p>
+                  <p className="text-gray-600">Rent: {booking.rent} BDT</p>
+                  <p className="text-gray-600">
+                    From: {new Date(booking.checkIn).toLocaleDateString()}
+                  </p>
+                  <p className="text-gray-600">
+                    To: {new Date(booking.checkOut).toLocaleDateString()}
+                  </p>
+                  <div className="w-full flex flex-row flex-wrap">
+                    {booking.roommates &&
+                      booking.roommates.map((roommate, index) => (
+                        <RoommateCard key={index} roommate={roommate} />
+                      ))}
                   </div>
                 </div>
-                <h2 className="text-lg font-semibold">{booking.address}</h2>
-                <p className="text-gray-600">{booking.description}</p>
-                <p className="text-gray-600">Rent: {booking.rent} BDT</p>
-                <p className="text-gray-600">
-                  From: {new Date(booking.checkIn).toLocaleDateString()}
-                </p>
-                <p className="text-gray-600">
-                  To: {new Date(booking.checkOut).toLocaleDateString()}
-                </p>
               </div>
               <div className="w-full flex flex-row justify-end items-end gap-2">
                 <IconButton
