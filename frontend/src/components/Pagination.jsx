@@ -42,7 +42,7 @@ const Pagination = ({
   return (
     <ul
       className={twMerge(
-        "flex w-full items-stretch justify-end gap-x-1 rounded-lg bg-white/50 px-6 py-3 shadow-lg",
+        "flex w-full max-w-full items-stretch justify-end gap-x-1 rounded-lg bg-white/50 px-6 py-3 shadow-lg",
         className
       )}
     >

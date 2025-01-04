@@ -21,6 +21,7 @@ import ListingPage from "./features/listing/pages/ListingPage";
 import ListingDetailsPage from "./features/listing/pages/ListingDetailsPage";
 import HomeNavigator from "./components/HomeNavigator";
 import ChatPage from "./features/chat/pages/ChatPage";
+import TransactionPage from "./features/transactions/pages/TransactionPage";
 const ModalRouter = lazy(() => import("./ModalRouter"));
 
 function App() {
@@ -40,6 +41,7 @@ function App() {
         <Route path="/*" element={<PrivateOutlet />}>
           <Route path="logout" element={<LogoutPage />} />
           <Route path="dashboard" element={<DashboardPage />} />
+          <Route path="transactions" element={<TransactionPage />} />
           {user.userType === "student" && (
             <>
               <Route path="appartments" element={<AppartmentPage />} />

@@ -24,7 +24,7 @@ const authMiddleware = async (req, res, next) => {
         });
       }
       req.user = {
-        ...user,
+        ...user.toJSON(),
         ...decoded,
       };
       next();

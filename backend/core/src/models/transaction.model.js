@@ -52,9 +52,8 @@ const transactionSchema = new mongoose.Schema(
     },
     status: {
       type: mongoose.Schema.Types.String,
-      required: true,
-      enum: ["Successful", "Pending", "Failed", "Cancelled"],
-      default: "Pending",
+      enum: ["VALID", "FAILED", "CANCELLED", "PENDING"],
+      default: "PENDING",
     },
     apartment: {
       type: {
@@ -83,6 +82,29 @@ const transactionSchema = new mongoose.Schema(
         },
       },
     },
+    transaction: {
+      type: {
+        bankTransactionId: {
+          type: mongoose.Schema.Types.String,
+        },
+        cardIssuer: {
+          type: mongoose.Schema.Types.String,
+        },
+        cardBrand: {
+          type: mongoose.Schema.Types.String,
+        },
+        cardType: {
+          type: mongoose.Schema.Types.String,
+        },
+        cardCountryCode: {
+          type: mongoose.Schema.Types.String,
+        },
+        failedReason: {
+          type: mongoose.Schema.Types.String,
+        },
+      },
+      required: false,
+    },
     amount: {
       type: mongoose.Schema.Types.Number,
       required: true,
@@ -90,6 +112,14 @@ const transactionSchema = new mongoose.Schema(
     hash: {
       type: mongoose.Schema.Types.String,
       required: true,
+    },
+    currency: {
+      type: mongoose.Schema.Types.String,
+      default: "BDT",
+    },
+    gatewayUrl: {
+      type: mongoose.Schema.Types.String,
+      required: false,
     },
   },
   {

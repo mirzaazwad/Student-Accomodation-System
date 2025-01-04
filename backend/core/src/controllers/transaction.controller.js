@@ -4,6 +4,7 @@ const { User } = require("../models/user.model");
 const { SSLCommerzService } = require("../providers/sslcommerz");
 const bcrypt = require("bcrypt");
 const { toMongoID } = require("../utils/Helper");
+const { omit } = require("lodash");
 
 const initiatePaymment = async (req, res) => {
   try {
@@ -36,6 +37,8 @@ const initiatePaymment = async (req, res) => {
     await transaction.save();
     const sslcommerz = await SSLCommerzService.init(transaction._id);
     const gatewayUrl = await sslcommerz.makePaymentRequest();
+    transaction.gatewayUrl = gatewayUrl;
+    await transaction.save();
     return res.status(200).json({
       gatewayUrl,
     });
@@ -49,15 +52,23 @@ const successfulPayment = async (req, res) => {
     const transactionId = req.query.transaction_id;
     const hash = req.query.hash;
     const transaction = await Transaction.findById(transactionId);
+
     if (!transaction) {
       return res.status(404).json({ message: "Transaction not found" });
     }
     if (transaction.hash !== hash) {
       return res.status(401).json({ message: "Unauthorized transaction" });
     }
-    transaction.status = "Successful";
+    transaction.transaction = {
+      bankTransactionId: req.body.bank_tran_id,
+      cardBrand: req.body.card_brand ?? "N/A",
+      cardIssuer: req.body.card_issuer ?? "N/A",
+      cardType: req.body.card_sub_brand ?? "N/A",
+      cardCountryCode: req.body.card_issuer_country_code ?? "N/A",
+    };
+    transaction.status = req.body.status;
     await transaction.save();
-    return res.status(200).json({ message: "Payment successful" });
+    return res.redirect(`${process.env.CLIENT_URL}/transactions`);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -68,15 +79,24 @@ const failedPayment = async (req, res) => {
     const transactionId = req.query.transaction_id;
     const hash = req.query.hash;
     const transaction = await Transaction.findById(transactionId);
+
     if (!transaction) {
       return res.status(404).json({ message: "Transaction not found" });
     }
     if (transaction.hash !== hash) {
       return res.status(401).json({ message: "Unauthorized transaction" });
     }
-    transaction.status = "Failed";
+    transaction.transaction = {
+      bankTransactionId: req.body.bank_tran_id,
+      cardBrand: req.body.card_brand ?? "N/A",
+      cardIssuer: req.body.card_issuer ?? "N/A",
+      cardType: req.body.card_sub_brand ?? "N/A",
+      cardCountryCode: req.body.card_issuer_country_code ?? "N/A",
+      failedReason: req.body.error ?? "N/A",
+    };
+    transaction.status = req.body.status;
     await transaction.save();
-    return res.status(200).json({ message: "Payment failed" });
+    return res.redirect(`${process.env.CLIENT_URL}/transactions`);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -87,15 +107,19 @@ const cancelPayment = async (req, res) => {
     const transactionId = req.query.transaction_id;
     const hash = req.query.hash;
     const transaction = await Transaction.findById(transactionId);
+
     if (!transaction) {
       return res.status(404).json({ message: "Transaction not found" });
     }
     if (transaction.hash !== hash) {
       return res.status(401).json({ message: "Unauthorized transaction" });
     }
-    transaction.status = "Cancelled";
+    transaction.transaction = {
+      failedReason: req.body.error ?? "N/A",
+    };
+    transaction.status = req.body.status;
     await transaction.save();
-    return res.status(200).json({ message: "Payment cancelled" });
+    return res.redirect(`${process.env.CLIENT_URL}/transactions`);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -106,6 +130,7 @@ const ipn = async (req, res) => {
     const transactionId = req.query.transaction_id;
     const hash = req.query.hash;
     const transaction = await Transaction.findById(transactionId);
+    console.log(req.body);
     if (!transaction) {
       return res.status(404).json({ message: "Transaction not found" });
     }
@@ -118,23 +143,28 @@ const ipn = async (req, res) => {
   }
 };
 
-const getTransactionsForLandlord = async (req, res) => {
+const getTransactions = async (req, res) => {
   try {
-    const transactions = await Transaction.find({
-      "to._id": toMongoID(req.user.id),
-    });
-    return res.status(200).json(transactions);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
+    const { page, limit } = req.query;
+    const pageNumber = parseInt(page, 10) || 1;
+    const limitNumber = parseInt(limit, 10) || 10;
 
-const getTransactionsForStudent = async (req, res) => {
-  try {
-    const transactions = await Transaction.find({
-      "from._id": toMongoID(req.user.id),
+    const skip = (pageNumber - 1) * limitNumber;
+    const findOptions =
+      req.user.userType === "student"
+        ? { "from._id": toMongoID(req.user.id) }
+        : { "to._id": toMongoID(req.user.id) };
+    const rawTransactions = await Transaction.find(findOptions)
+      .skip(skip)
+      .limit(limitNumber);
+    const transactions = rawTransactions.map((transaction) => {
+      if (transaction.status === "VALID") {
+        return omit(transaction.toJSON(), ["gatewayUrl"]);
+      }
+      return transaction.toJSON();
     });
-    return res.status(200).json(transactions);
+    const total = await Transaction.countDocuments(findOptions);
+    return res.status(200).json({ transactions, total });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -146,6 +176,5 @@ module.exports = {
   failedPayment,
   cancelPayment,
   ipn,
-  getTransactionsForLandlord,
-  getTransactionsForStudent,
+  getTransactions,
 };
