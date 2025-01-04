@@ -5,6 +5,7 @@ const { toMongoID } = require("../utils/Helper");
 const NotificationHelper = require("../utils/NotificationClient");
 const StorageClient = require("../providers/storage");
 const fs = require("fs");
+const { omit } = require("lodash");
 
 const createApartment = async (req, res) => {
   try {
@@ -155,9 +156,24 @@ const getApartmentById = async (req, res) => {
     ) {
       isFavorite = true;
     }
+    let isBooked = false;
+    let isBookedByRoommate = false;
+    if (user.userType === "student") {
+      isBooked = apartment.bookings
+        .map((booking) => booking.student.id.toString())
+        .includes(user.id);
+      isBookedByRoommate = apartment.bookings.find((booking) => {
+        const roommates = booking.roommates.map((roommate) =>
+          roommate.id.toString()
+        );
+        return roommates.includes(user.id);
+      });
+    }
     return res.status(200).json({
       ...apartment._doc,
       isFavorite,
+      isBooked,
+      isBookedByRoommate: !!isBookedByRoommate,
     });
   } catch (error) {
     return res.status(400).json({
@@ -236,6 +252,32 @@ const addBooking = async (req, res) => {
     const apartment = await Apartment.findById(id);
     if (!apartment) {
       return res.status(404).json({ message: "Apartment not found" });
+    }
+    if (apartment.availabilityStatus === "Unavailable") {
+      return res.status(400).json({
+        message: "Apartment is unavailable",
+      });
+    }
+    const isAlreadyBooked = apartment.bookings.find(
+      (booking) =>
+        booking.status === "Approved" &&
+        booking.checkIn <= checkOut &&
+        booking.checkOut >= checkIn
+    );
+    if (isAlreadyBooked) {
+      return res.status(400).json({
+        message: `Apartment already booked  for ${checkIn} to ${checkOut}`,
+      });
+    }
+    const isAlreadyBookedByUser = apartment.bookings.find(
+      (booking) =>
+        booking.student.id.toString() === req.user.id &&
+        booking.status === "Pending"
+    );
+    if (isAlreadyBookedByUser) {
+      return res
+        .status(400)
+        .json({ message: "Apartment already booked by user" });
     }
     const booking = {
       student: {
@@ -500,6 +542,39 @@ const deleteReview = async (req, res) => {
   }
 };
 
+const fetchBookingDetails = async (req, res) => {
+  try {
+    const { apartmentId } = req.params;
+    const apartment = await Apartment.findById(apartmentId).populate(
+      "bookings.roommates.id"
+    );
+    if (!apartment) {
+      return res.status(404).json({ message: "Apartment not found" });
+    }
+    const booking = apartment.bookings.find(
+      (booking) => booking.student.id.toString() === req.user.id
+    );
+    if (!booking) {
+      return res.status(404).json({ message: "Booking not found" });
+    }
+    const roommates = booking.roommates.map((roommate) => {
+      return {
+        ...roommate.id.toJSON(),
+        id: roommate.id._id.toString(),
+        status: roommate.status,
+      };
+    });
+    return res.status(200).json({
+      ...booking.toJSON(),
+      roommates,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      message: "Failed to fetch booking details: " + error.message,
+    });
+  }
+};
+
 const updateBookingStatus = async (req, res) => {
   try {
     const { apartmentId, bookingId } = req.params;
@@ -524,6 +599,114 @@ const updateBookingStatus = async (req, res) => {
   }
 };
 
+const updateBookingInformation = async (req, res) => {
+  try {
+    const { apartmentId, bookingId } = req.params;
+    const { checkIn, checkOut, roommates } = req.body;
+    const apartment = await Apartment.findById(apartmentId);
+    if (!apartment) {
+      return res.status(404).json({ message: "Apartment not found" });
+    }
+    const booking = apartment.bookings.find(
+      (booking) => booking._id.toString() === bookingId
+    );
+    if (!booking) {
+      return res.status(404).json({ message: "Booking not found" });
+    }
+
+    booking.checkIn = checkIn;
+    booking.checkOut = checkOut;
+    const newRoommates = roommates.filter((roommate) => {
+      return !booking.roommates.some((rm) => rm.id.toString() === roommate.id);
+    });
+    booking.roommates = roommates.map((roommate) => {
+      return omit(roommate, ["status"]);
+    });
+    booking.status = "Pending";
+    await apartment.save();
+    await Promise.all(
+      newRoommates.map(async (roommate) => {
+        const existingRequest = await Requests.findOne({
+          requester: req.user.id,
+          requestee: roommate.id,
+          apartment: apartmentId,
+          booking: bookingId,
+        });
+        if (existingRequest) {
+          existingRequest.status = "Pending";
+          await existingRequest.save();
+        } else {
+          const request = new Requests({
+            requester: req.user.id,
+            requestee: roommate.id,
+            apartment: apartmentId,
+            status: "Pending",
+            booking: bookingId,
+          });
+          await request.save();
+        }
+      })
+    );
+    return res.status(200).json({ message: "Booking updated successfully" });
+  } catch (error) {
+    return res.status(400).json({
+      message: "Failed to update booking: " + error.message,
+    });
+  }
+};
+
+getBookings = async (req, res) => {
+  try {
+    let findOptions = {};
+    if (req.user.userType === "landlord") {
+      findOptions = { landlord: toMongoID(req.user.id) };
+    } else {
+      findOptions = { "bookings.student.id": toMongoID(req.user.id) };
+    }
+    const apartments = await Apartment.find(findOptions)
+      .populate("bookings.roommates.id")
+      .populate("landlord", "username email");
+    if (apartments.length === 0) {
+      return res.status(404).json({ message: "Booking not found" });
+    }
+    let fetchedBookings = [];
+    apartments.forEach((apartment) => {
+      const bookings =
+        req.user.userType === "student"
+          ? apartment.bookings.filter(
+              (booking) => booking.student.id.toString() === req.user.id
+            )
+          : apartment.bookings;
+
+      const modifiedBookings = bookings.map((booking) => {
+        const roommates = booking.roommates.map((roommate) => {
+          return {
+            ...roommate.id.toJSON(),
+            id: roommate.id._id.toString(),
+            status: roommate.status,
+          };
+        });
+        allRoommatesNotPending = roommates.every(
+          (roommate) => roommate.status !== "Pending"
+        );
+        return {
+          ...omit(apartment.toJSON(), ["bookings"]),
+          apartmentId: apartment._id.toString(),
+          ...booking.toJSON(),
+          roomatesConfirmed: allRoommatesNotPending,
+          roommates,
+        };
+      });
+      fetchedBookings = [...fetchedBookings, ...modifiedBookings];
+    });
+    return res.status(200).json(fetchedBookings);
+  } catch (error) {
+    return res.status(400).json({
+      message: "Failed to fetch booking: " + error.message,
+    });
+  }
+};
+
 module.exports = {
   createApartment,
   getApartments,
@@ -537,4 +720,8 @@ module.exports = {
   getAvailableApartments,
   getBookedAppartments,
   addBooking,
+  updateBookingStatus,
+  fetchBookingDetails,
+  updateBookingInformation,
+  getBookings,
 };

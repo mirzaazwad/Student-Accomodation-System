@@ -6,6 +6,7 @@ import React, { memo } from "react";
 import AddApartmentModal from "./features/listing/modals/AddApartmentModal";
 import EditApartmentModal from "./features/listing/modals/EditApartmentModal";
 import BookingModal from "./features/appartments/modals/BookingModal";
+import EditBookingModal from "./features/appartments/modals/EditBookingModal";
 
 const ModalRouter = () => {
   const open = useSelector((state) => state.modal.open);
@@ -22,6 +23,9 @@ const ModalRouter = () => {
           <EditApartmentModal />
         )}
         {modalTypes.BOOKING === selectedModal && open && <BookingModal />}
+        {modalTypes.EDIT_BOOKING === selectedModal && open && (
+          <EditBookingModal />
+        )}
       </React.Fragment>
     </div>
   );

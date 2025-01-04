@@ -1,4 +1,5 @@
 const SSLCommerzPayment = require("sslcommerz").SslCommerzPayment;
+const Apartment = require("../models/appartment.model");
 const Transaction = require("../models/transaction.model");
 const { User } = require("../models/user.model");
 
@@ -36,11 +37,27 @@ class SSLCommerzService {
     };
   }
 
-  static async init(transactionId) {
+  static async init(transactionId, bookingId) {
     const transaction = await Transaction.findById(transactionId);
     const user = await User.findById(transaction.from._id);
     if (!transaction) {
       throw Error("Transaction not found");
+    }
+    const apartment = await Apartment.findById(transaction.apartment.id);
+    if (!apartment) {
+      throw Error("Apartment not found");
+    }
+    const booking = apartment.bookings.find(
+      (booking) => booking._id.toString() === bookingId
+    );
+    if (!booking) {
+      throw Error("Booking not found");
+    }
+    if (booking.status === "Paid") {
+      throw Error("Booking already paid");
+    }
+    if (transaction.status === "VALID") {
+      throw Error("Transaction already paid");
     }
     const sslcommerz = new SSLCommerzService({
       user,

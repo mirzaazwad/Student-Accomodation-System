@@ -3,8 +3,20 @@ import IconButton from "../../../components/input/IconButton";
 import { FaPlus, FaTrash } from "react-icons/fa";
 import { useState } from "react";
 
-const RoommateCard = ({ roommate, addRoommate, removeRoommate }) => {
+const RoommateCard = ({
+  roommate,
+  addRoommate,
+  removeRoommate,
+  selectedRoommates,
+  isSelected,
+}) => {
   const [isRequested, setIsRequested] = useState(false);
+  if (
+    selectedRoommates &&
+    selectedRoommates.map((roommate) => roommate.id).includes(roommate.id)
+  ) {
+    return <></>;
+  }
   return (
     <div className="w-[350px] h-[600px] p-4 flex-shrink-0 flex flex-col items-center gap-4 rounded-lg shadow-md justify-start items-start">
       <div className="w-full flex flex-col items-center justify-center">
@@ -30,19 +42,21 @@ const RoommateCard = ({ roommate, addRoommate, removeRoommate }) => {
         </p>
       </div>
       <div className="w-full flex flex-row items-center justify-center">
-        <IconButton
-          label={!isRequested ? "Add Roommate" : "Remove Roommate"}
-          onClick={() => {
-            setIsRequested(!isRequested);
-            if (!isRequested) {
-              addRoommate(roommate);
-            } else {
-              removeRoommate(roommate);
-            }
-          }}
-        >
-          {!isRequested ? <FaPlus /> : <FaTrash />}
-        </IconButton>
+        {!isSelected && (
+          <IconButton
+            label={!isRequested ? "Add Roommate" : "Remove Roommate"}
+            onClick={() => {
+              setIsRequested(!isRequested);
+              if (!isRequested) {
+                addRoommate(roommate);
+              } else {
+                removeRoommate(roommate);
+              }
+            }}
+          >
+            {!isRequested ? <FaPlus /> : <FaTrash />}
+          </IconButton>
+        )}
       </div>
     </div>
   );

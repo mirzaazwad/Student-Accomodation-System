@@ -42,6 +42,11 @@ const apartmentSchema = new mongoose.Schema(
       required: true,
       min: 0,
     },
+    availabilityStatus: {
+      type: mongoose.Schema.Types.String,
+      enum: ["Available", "Unavailable"],
+      default: "Unavailable",
+    },
     amenities: {
       type: [mongoose.Schema.Types.String],
       default: [],
@@ -111,7 +116,7 @@ const apartmentSchema = new mongoose.Schema(
         checkOut: { type: mongoose.Schema.Types.Date, required: true },
         status: {
           type: mongoose.Schema.Types.String,
-          enum: ["Paid", "Approved", "Pending", "Rejected"],
+          enum: ["Paid", "Approved", "Pending", "Rejected", "Confirm"],
           default: "Pending",
         },
         rejectionReason: { type: mongoose.Schema.Types.String, trim: true },

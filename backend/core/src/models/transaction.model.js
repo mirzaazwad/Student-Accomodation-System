@@ -55,6 +55,10 @@ const transactionSchema = new mongoose.Schema(
       enum: ["VALID", "FAILED", "CANCELLED", "PENDING"],
       default: "PENDING",
     },
+    bookingId: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+    },
     apartment: {
       type: {
         id: {

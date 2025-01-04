@@ -15,12 +15,16 @@ const requestsSchema = new mongoose.Schema(
     status: {
       type: mongoose.Schema.Types.String,
       required: true,
-      enum: ["Pending", "Accepted", "Rejected"],
+      enum: ["Pending", "Accepted", "Rejected", "Cancelled"],
       default: "Pending",
     },
     apartment: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Apartment",
+      required: true,
+    },
+    booking: {
+      type: mongoose.Schema.Types.ObjectId,
       required: true,
     },
   },

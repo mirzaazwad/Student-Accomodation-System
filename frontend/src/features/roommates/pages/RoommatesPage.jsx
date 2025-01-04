@@ -20,6 +20,8 @@ const RoommatesPage = () => {
             return {
               ...request.requester,
               appartmentId: request.apartment,
+              status: request.status,
+              requestId: request._id,
             };
           })
         );
@@ -29,6 +31,8 @@ const RoommatesPage = () => {
             return {
               ...request.requestee,
               appartmentId: request.apartment,
+              status: request.status,
+              requestId: request._id,
             };
           })
         );
@@ -68,17 +72,6 @@ const RoommatesPage = () => {
             Requests
           </Tab>
           <Tab
-            id="roommates"
-            onClick={() => handleTabChange(`roommates`)}
-            className={`p-4 rounded-t-lg ${
-              currentTab === "roommates"
-                ? "bg-primary-dark text-white"
-                : "hover:bg-primary text-primary hover:text-white border-t-2 border-l-2 border-r-2 border-primary"
-            }`}
-          >
-            Current Roommates
-          </Tab>
-          <Tab
             id="requester"
             onClick={() => handleTabChange(`requester`)}
             className={`p-4 rounded-t-lg ${
@@ -99,7 +92,9 @@ const RoommatesPage = () => {
               <RoommateCard
                 key={index}
                 request={request}
-                showAccept={currentTab === "requestee"}
+                showAccept={
+                  currentTab === "requestee" && request.status === "Pending"
+                }
               />
             ))}
           </TabPanel>

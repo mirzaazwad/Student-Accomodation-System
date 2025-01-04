@@ -8,7 +8,7 @@ const { omit } = require("lodash");
 
 const initiatePaymment = async (req, res) => {
   try {
-    const { from, to, amount, appartmentId } = req.body;
+    const { from, to, amount, appartmentId, bookingId } = req.body;
     const fromUser = await User.findById(from);
     const toUser = await User.findById(to);
     const appartment = await Apartment.findById(appartmentId);
@@ -33,9 +33,10 @@ const initiatePaymment = async (req, res) => {
         location: appartment.location,
       },
       hash,
+      bookingId,
     });
     await transaction.save();
-    const sslcommerz = await SSLCommerzService.init(transaction._id);
+    const sslcommerz = await SSLCommerzService.init(transaction._id, bookingId);
     const gatewayUrl = await sslcommerz.makePaymentRequest();
     transaction.gatewayUrl = gatewayUrl;
     await transaction.save();
@@ -52,13 +53,22 @@ const successfulPayment = async (req, res) => {
     const transactionId = req.query.transaction_id;
     const hash = req.query.hash;
     const transaction = await Transaction.findById(transactionId);
-
     if (!transaction) {
       return res.status(404).json({ message: "Transaction not found" });
     }
     if (transaction.hash !== hash) {
       return res.status(401).json({ message: "Unauthorized transaction" });
     }
+    const apartment = await Apartment.findById(transaction.apartment.id);
+    const booking = apartment.bookings.find(
+      (booking) =>
+        booking.student.id.toString() === transaction.to._id.toString()
+    );
+    if (!booking) {
+      return res.status(404).json({ message: "Booking not found" });
+    }
+    booking.status = "Paid";
+    await apartment.save();
     transaction.transaction = {
       bankTransactionId: req.body.bank_tran_id,
       cardBrand: req.body.card_brand ?? "N/A",

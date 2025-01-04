@@ -4,6 +4,7 @@ import LoadingComponent from "../../../components/LoadingComponent";
 import ProfilePicture from "../../../components/input/ProfilePicture";
 import { useSelector } from "react-redux";
 import FavoriteAppartments from "../components/FavoriteAppartments";
+import Bookings from "../components/Bookings";
 
 const DashboardPage = () => {
   const {
@@ -59,6 +60,7 @@ const DashboardPage = () => {
       {user.userType === "student" && (
         <FavoriteAppartments favoriteApparments={favoriteApparments} />
       )}
+      <Bookings />
     </div>
   );
 };

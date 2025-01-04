@@ -23,7 +23,6 @@ const AppartmentDetailsPage = () => {
     fetchSession,
   } = useAppartmentDetails(id);
   const dispatch = useDispatch();
-
   if (loading) {
     return <LoadingComponent />;
   }
@@ -47,20 +46,41 @@ const AppartmentDetailsPage = () => {
         >
           <FaStar />
         </IconButton>
-        <IconButton
-          label="Book This Apartment"
-          className="my-2"
-          onClick={() => {
-            dispatch(
-              modalActions.setModalData({
-                id: id,
-              })
-            );
-            openModal(modalTypes.BOOKING);
-          }}
-        >
-          <FaBook />
-        </IconButton>
+        {!appartment.isBooked &&
+          !appartment.isBookedByRoommate &&
+          appartment.availabilityStatus === "Available" && (
+            <IconButton
+              label="Book This Apartment"
+              className="my-2"
+              onClick={() => {
+                dispatch(
+                  modalActions.setModalData({
+                    id: id,
+                  })
+                );
+                openModal(modalTypes.BOOKING);
+              }}
+            >
+              <FaBook />
+            </IconButton>
+          )}
+        {appartment.isBooked &&
+          appartment.availabilityStatus === "Available" && (
+            <IconButton
+              label="View Booking Details"
+              className="my-2"
+              onClick={() => {
+                dispatch(
+                  modalActions.setModalData({
+                    id: id,
+                  })
+                );
+                openModal(modalTypes.EDIT_BOOKING);
+              }}
+            >
+              <FaBook />
+            </IconButton>
+          )}
       </div>
       <div className="w-full flex flex-col lg:flex-row">
         <div className="w-full lg:mx-4 lg:h-[350px] md:w-3/4 lg:w-1/2 flex flex-col gap-4 rounded-lg shadow-md my-4">

@@ -1,4 +1,6 @@
 import Axios from "axios";
+import { appStore } from "../store/redux-store";
+import { authActions } from "../context/auth.slice";
 
 class RequestHandler {
   constructor() {
@@ -24,7 +26,8 @@ class RequestHandler {
       },
       function (error) {
         if (error.response?.status === 401) {
-          console.log("Unauthorized");
+          appStore.dispatch(authActions.logout());
+          window.location.reload();
         }
         return Promise.reject(error);
       }
